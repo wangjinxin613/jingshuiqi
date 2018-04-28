@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<meta charset="utf-8" />
+		<title>净水器</title>
+		<link rel="stylesheet" href="css/animate.min.css">
+		<script src="js/jquery-1.8.1.min.js"></script>
+	</head>
+
+	<body>
+		<header>
+			<div class="wrap" style="width: 1300px;">
+				<ul class="logo">
+					<img src="img/logo.png" alt="" />
+				</ul>
+				<ul class="nav">
+					<li>
+						<a href="" class="acti">首页</a>
+					</li>
+					<li>
+						<a href="">产品</a>
+					</li>
+					<li>
+						<a href="">服务</a>
+					</li>
+					<li>
+						<a href="">动态</a>
+					</li>
+					<li>
+						<a href="">关于</a>
+					</li>
+				</ul>
+			</div>
+		</header>
+		<!--轮播图区域-->
+		<div class="banner">
+			<div class="carousel" @mouseenter="enter" @mouseleave="leave">
+				<transition-group tag="ul" name="image" enter-active-class="animated lightSpeedIn" leave-active-class="animated lightSpeedOut">
+					<li v-for='(image,index) in img' :key='index' v-show="index === mark">
+						<a href="javascript:;">
+							<img :src="image">
+						</a>
+					</li>
+				</transition-group>
+				<div class="bullet">
+					<span v-for="(item,index) in img.length" :class="{'active':index === mark}" @click="change(index)" :key="index"></span>
+				</div>
+				<div class="switch">
+					<span class="prev" @click="prev">&lt;</span>
+					<span class="next" @click="next">&gt;</span>
+				</div>
+			</div>
+		</div>
+		<!-- 产品展示 -->
+		<div class="product index-list">
+			<h1>产品展示</h1>
+			<div class="tip"><div class="border-hr"></div><div >Product display</div><div class="border-hr"></div></div>
+			
+			<ul class="function">
+				<li class="acti">全部</li>
+				<li>温控管线机</li>
+				<li>中央制水设备</li>
+				<li>温热一体机</li>
+				<li >步进式饮水平台</li>
+			</ul>
+			<div class="wrap product-list">
+				<div class="single">
+					<img src="https://pic.mdcdn.cn/ImageStore/144025/pic/67c662e9b99effabA27639/67c662e9b99effabA27639_530*530.jpg?x-oss-process=image/format,webp/quality,Q_100&">
+					<p>免安速热一体机免安速热一体机免安速热一体机免安速热一体机</p>
+				</div>
+				<div class="single">
+					<img src="https://pic.mdcdn.cn/ImageStore/144025/pic/67c662e9b99effabA27639/67c662e9b99effabA27639_530*530.jpg?x-oss-process=image/format,webp/quality,Q_100&">
+					<p>免安速热一体机</p>
+				</div>
+				<div class="single">
+					<img src="https://pic.mdcdn.cn/ImageStore/144025/pic/67c662e9b99effabA27639/67c662e9b99effabA27639_530*530.jpg?x-oss-process=image/format,webp/quality,Q_100&">
+					<p>免安速热一体机</p>
+				</div>
+				<div class="single">
+					<img src="https://pic.mdcdn.cn/ImageStore/144025/pic/67c662e9b99effabA27639/67c662e9b99effabA27639_530*530.jpg?x-oss-process=image/format,webp/quality,Q_100&">
+					<p>免安速热一体机</p>
+				</div>
+				<div class="single">
+					<img src="https://pic.mdcdn.cn/ImageStore/144025/pic/67c662e9b99effabA27639/67c662e9b99effabA27639_530*530.jpg?x-oss-process=image/format,webp/quality,Q_100&">
+					<p>免安速热一体机</p>
+				</div>
+				<div class="single">
+					<img src="https://pic.mdcdn.cn/ImageStore/144025/pic/67c662e9b99effabA27639/67c662e9b99effabA27639_530*530.jpg?x-oss-process=image/format,webp/quality,Q_100&">
+					<p>免安速热一体机</p>
+				</div>
+				<div class="single">
+					<img src="https://pic.mdcdn.cn/ImageStore/144025/pic/67c662e9b99effabA27639/67c662e9b99effabA27639_530*530.jpg?x-oss-process=image/format,webp/quality,Q_100&">
+					<p>免安速热一体机</p>
+				</div>
+				<div class="single">
+					<img src="https://pic.mdcdn.cn/ImageStore/144025/pic/67c662e9b99effabA27639/67c662e9b99effabA27639_530*530.jpg?x-oss-process=image/format,webp/quality,Q_100&">
+					<p>免安速热一体机</p>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<!--工程案例-->
+		<div class="case index-list">
+			<h1>工程案例</h1>
+			<div class="tip"><div class="border-hr"></div><div >Engineering case</div><div class="border-hr"></div></div>
+			<ul class="function">
+				<li class="acti">全部</li>
+				<li>学校饮水</li>
+				<li>中央制水设备</li>
+				<li>温热一体机</li>
+				<li >步进式饮水平台</li>
+			</ul>
+			<div class="case-list wrap">
+				<div class="content-left">
+					<h2>学校饮水工程案例</h2>
+					<p>学校饮水目前存在问题：1、卫生不达标；2、设备不安全；3、水质不合格；4、供水数量不足；5、水龙头数量不足；鸿效兴华饮水机为您提供专业解决方案： 一、卫生检查达标：近十年来金泉涞饮水机的卫生指标检查全部合格。 二、七重安全保护，零压力系统 防干烧、防蒸汽、防缺水、防超温、防超压、防漏水、防漏电</p>
+					<p>More...</p>
+				</div>
+				<div class="content-right">
+					<img src="img/company.png"/>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<!--行业动态-->
+		<div class="trade index-list">
+			<h1>行业动态</h1>
+			<div class="tip"><div class="border-hr"></div><div >PingFang-SC-Medium</div><div class="border-hr"></div></div>
+			<div class="trade-list wrap">
+				<div class="single">
+					<img src="img/company.png">
+					<div class="content">
+						<h2>鸿效兴华净水器护饮水安全</h2>
+						<p>鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全</p>
+						<p>2018-04-28</p>
+					</div>
+				</div>
+				<div class="single">
+					<img src="img/company.png">
+					<div class="content">
+						<h2>鸿效兴华净水器护饮水安全</h2>
+						<p>鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全</p>
+						<p>2018-04-28</p>
+					</div>
+				</div>
+				<div class="single">
+					<img src="img/company.png">
+					<div class="content">
+						<h2>鸿效兴华净水器护饮水安全</h2>
+						<p>鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全</p>
+						<p>2018-04-28</p>
+					</div>
+				</div>
+				<div class="single">
+					<img src="img/company.png">
+					<div class="content">
+						<h2>鸿效兴华净水器护饮水安全</h2>
+						<p>鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全</p>
+						<p>2018-04-28</p>
+					</div>
+				</div>
+					<div class="single">
+					<img src="img/company.png">
+					<div class="content">
+						<h2>鸿效兴华净水器护饮水安全</h2>
+						<p>鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全</p>
+						<p>2018-04-28</p>
+					</div>
+				</div>
+					<div class="single">
+					<img src="img/company.png">
+					<div class="content">
+						<h2>鸿效兴华净水器护饮水安全</h2>
+						<p>鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全鸿效兴华净水器护饮水安全</p>
+						<p>2018-04-28</p>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<!--关于鸿效-->
+		<div class="case index-list">
+			<h1>关于鸿效</h1>
+			<div class="tip"><div class="border-hr"></div><div >About The Enterprise</div><div class="border-hr"></div></div>
+			<div class="case-list wrap" style="margin-top: 45px;">
+				<div class="content-right">
+					<img src="img/company.png"/>
+				</div>
+				<div class="content-left">
+					<h2>学校饮水工程案例</h2>
+					<p>学校饮水目前存在问题：1、卫生不达标；2、设备不安全；3、水质不合格；4、供水数量不足；5、水龙头数量不足；鸿效兴华饮水机为您提供专业解决方案： 一、卫生检查达标：近十年来金泉涞饮水机的卫生指标检查全部合格。 二、七重安全保护，零压力系统 防干烧、防蒸汽、防缺水、防超温、防超压、防漏水、防漏电</p>
+					<p style="text-align:right">More...</p>
+				</div>
+				
+			</div>
+			<div class="clear"></div>
+		</div>
+		<!--页面底部
+		-->
+		<footer class="wrap">
+			<img src="img/logo.png" class="foot-logo">
+			<div class="foot-content">
+				<p>深圳市龙岗区平湖街道白坭坑社区横东岭路58号E栋301-302</p>
+				<p>电话：0769-88888888</p>
+				<p>E-mail：474846199@qq.com</p>
+				<p>客服热线：400-8888-888</p>
+			</div>
+			<img src="img/erweima.png" class="erweima">
+			<div class="clear"></div>
+		</footer>
+	</body>
+	<script src="js/vue.min.js"></script>
+	<script>
+		/*
+				        轮播逻辑
+				        效果 ==> 图片显示第几章的时候，下面的bullet的第几个就要改变成active
+				                 点击相应的bullet可以切换到对应的图片
+				    */
+
+		//初始化一个vue实例然后挂载到父元素上，并设定数据为图片的数组，以及后面计数用的mark，mark初始值为0
+		var vm = new Vue({
+			el: '.carousel',
+			data: {
+				mark: 0,
+				img: [
+					'img/banner1.webp',
+					'https://pic.mdcdn.cn/h5/pic/201804/245f397b1e13.jpg?x-oss-process=image/format,webp/quality,Q_100&@100Q.jpg',
+					'https://pic.mdcdn.cn/h5/pic/201804/ff56e67fc3e4.jpg?x-oss-process=image/format,webp/quality,Q_100&@100Q.jpg',
+					'https://pic.mdcdn.cn/h5/pic/201804/26be20c80fe7.jpg?x-oss-process=image/format,webp/quality,Q_100&@100Q.jpg'
+				],
+				time: null
+			},
+			methods: { //添加方法
+				
+				change(i) {
+					this.mark = i;
+				},
+				prev() {
+					this.mark--;
+					if(this.mark === -1) {
+						this.mark = 3;
+						return
+					}
+				},
+				next() {
+					this.mark++;
+					if(this.mark === 4) {
+						this.mark = 0;
+						return
+					}
+				},
+				autoPlay() {
+					this.mark++;
+					if(this.mark === 4) {
+						this.mark = 0;
+						return
+					}
+				},
+				play() {
+					this.time = setInterval(this.autoPlay, 3000);
+				},
+				enter() {
+					console.log('enter')
+					clearInterval(this.time);
+				},
+				leave() {
+					console.log('leave')
+					this.play();
+				}
+			},
+			created() {
+				this.play()
+			}
+		})
+	</script>
+
+</html>
