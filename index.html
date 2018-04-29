@@ -275,5 +275,12 @@
 			}
 		})
 	</script>
-
+	<script>
+		$(function(){
+			$(".function li").click(function(){
+				$(this).parents(".function").children("li").removeClass("acti");
+				$(this).addClass("acti");
+			});
+		});
+	</script>
 </html>
