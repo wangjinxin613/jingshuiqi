@@ -55,7 +55,7 @@ header li .acti{
 
 .carousel {
 	width: 100%;
-	height: 425pt;
+	height: calc(100vh - 70px);
 	overflow: hidden;
 	position: relative;
 	margin: 0 auto;
@@ -72,7 +72,7 @@ header li .acti{
 
 .carousel ul li a img {
 	width:100vw;
-	height: 425pt;
+		height: calc(100vh - 70px);
 }
 
 .bullet {
@@ -101,20 +101,20 @@ header li .acti{
 .switch span {
 	position: absolute;
 	width: 50px;
-	height: 50px;
-	line-height: 50px;
+	height: 100px;
+	line-height: 100px;
 	text-align: center;
-	background-color: rgba(0, 0, 0, .1);
+	background: rgba(0, 0, 0, .3);
 	font-size: 20px;
 	color: #ffffff;
 	top: 50%;
-	margin-top: -25px;
+	margin-top: -50px;
 	cursor: pointer;
 	font-family: "宋体";
 }
 
 .switch span:hover {
-	background-color: rgba(0, 0, 0, .5);
+	background-color: rgba(0, 0, 0, .6);
 }
 
 .prev {
@@ -130,13 +130,13 @@ header li .acti{
 }
 /** 产品展示 **/
 .index-list {
-	padding:25px 0;
+	padding:50px 0;
 }
 .index-list h1{
-	font-size: 25px;
+	font-size: 32px;
 	color: #6A6A6A;
 	text-align: center;
-
+	padding:10px 0;
 }
 .index-list .tip{
 	font-size: 12px;
@@ -145,6 +145,7 @@ header li .acti{
 	float: left;
 	transform: translateX(-50%);
 	margin-left: 50%;
+	
 	overflow: hidden;
 }
 .clear{
@@ -168,7 +169,8 @@ header li .acti{
 	display:flex;
 	margin: 0 auto;
 	width: 600px;
-	margin-top: 45px;
+	margin-top: 50px;
+
 }
 .function li{
 	width: 120px;
@@ -184,20 +186,31 @@ header li .acti{
 	background:#6296FF;
 }
 .product-list{
-	margin-top: 20px;
+	margin-top: 30px;
 	width:1210px;
 	
 }
 .product-list .single{
 	width:292.5px;	
+		overflow: hidden;
 	margin-right: 10px;
-	box-shadow: 0 0 3px #ccc;
+	box-shadow: 0 0 1px #ccc;
 	float: left;
 		margin-bottom: 10px;
+}
+.product-list .single img:hover{
+transform: scale(1);
+	transition: all 1s;
+}
+.product-list .single:hover{
+		box-shadow: 0 0 10px #999;
+		
+		transition: all 1s; 
 }
 .product-list .single img{
 	width: 100%;
 	height:292.5px;	
+	transform: scale(0.9);
 }
 .product-list p{
 	padding:0 10px;
@@ -216,7 +229,7 @@ header li .acti{
 }
 .case-list{
 	overflow: hidden;
-	margin-top: 20px;
+	margin-top: 30px;
 	height: 448px;
 	margin-bottom: 10px;
 }
@@ -264,8 +277,8 @@ header li .acti{
 	float: left;
 	box-sizing: border-box;
 	width: 50%;
-	margin-bottom: 20px;
-
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 .trade-list .single:nth-of-type(odd) {
 	padding-right: 30px;
