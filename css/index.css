@@ -335,3 +335,110 @@ footer .erweima{
 .none{
 	display: none;
 }
+
+/**
+ * 产品页
+ */
+.product-aside{
+	background: rgba(1,1,1,0.03);
+	padding-top: 15px;
+}
+.prod-list{
+	background: #fff;
+}
+.product-aside nav{
+
+
+	padding:15px 0;
+	
+}
+.prod-list nav ul{
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	overflow: hidden;
+}
+.prod-list li{
+	float: left;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+.prod-list .prod-serch{
+	margin-top: 20px;
+}
+.prod-list .prod-serch input{
+	margin: 0 auto;
+	display: block;
+	width: 30%;
+	padding:0 15px;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 100px;
+	outline: none;
+	border:1px solid #CCCCCC;
+	background: url("../img/search.png");
+	background-size: 15px;
+	background-position: right 12px center;
+	background-repeat: no-repeat;
+}
+.prod{
+	margin-top: 20px;
+	overflow: hidden;
+}
+.prod .single{
+	
+	width: 300px;
+	height: 300px;
+	float: left;
+	overflow: hidden;
+}
+.prod .single img{
+	width: 100%;
+	height: 300px;
+	transform: scale(0.8);
+	transition: all 0.8s;
+}
+.prod .beijing{
+	background: rgba(0,0,0,0.4);
+	height: 300px;
+	line-height: 300px;
+	text-align: center;
+	font-size: 18px;
+	color: #fff;
+	transition:all.8s;
+		display: none;
+	transform: translateY(-300px) translateX(-300px);
+
+}
+.prod .single:hover .beijing{
+	display: block;
+	transform:translateY(-300px) translatex(0px);
+	
+}
+.prod .single:hover img{
+	transform: scale(1);
+	opacity: 0.8;
+}
+.page{
+	padding:20px 0;
+	height: 40px;
+}
+.page ul{
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	border-left: 1px solid rgba(0,0,0,.1);
+	overflow: hidden;
+}
+.page ul li{
+	float: left;
+	letter-spacing: 2px;
+	padding:0px 15px;
+	height: 40px;
+	line-height: 40px;
+	background: #fff;
+	border-top: 1px solid rgba(0,0,0,.1);
+	border-bottom: 1px solid rgba(0,0,0,.1);
+	border-right: 1px solid rgba(0,0,0,.1);
+	color: #666;
+}
