@@ -1,0 +1,87 @@
+.nav-two {
+	height: 40px;
+	width: 100%;
+	background-color: #F2F2F2;
+	margin: 0 auto;
+}
+
+.nav-two-body a{
+	width: 180px;
+	height: 40px;
+	font-size: 15px;
+	font-family: PingFang-SC-Medium;
+	color: #00A2E9;
+	line-height: 40px;
+	padding: 8px;
+	letter-spacing: 1px;
+}
+.nav-two-body span {
+	color: #00A2E9;
+	font-size: 16px;
+}
+.nav-two-body {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+.products {
+	width: 1200px;
+	overflow: hidden;
+	background-color: white;
+	margin: 0 auto;
+	padding: 70px 0;
+}
+
+.products-im {
+	float: left;
+	position: relative;
+	width: 620px;
+
+
+}
+.products-tex {
+	float: left;
+
+	width: 520px;
+}
+
+.products-tex-top {
+	font-size: 30px;
+	color: #6A6A6A;
+
+}
+
+.canshu {
+	color: #6A6A6A;
+	font-size: 18px;
+	margin: 15px 0 5px;
+	font-weight: bold;
+}
+
+.products-tex-middle-l {
+	color: #6A6A6A;
+	float: left;
+}
+
+.products-tex-middle-r {
+	color: #6A6A6A;
+	float: right;
+}
+
+.a {
+	color: #6A6A6A;
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 90px;
+}
+
+.b {
+	color: #6A6A6A;
+	margin-top: 5px;
+}
+
+.show {
+	background: #fff;
+	padding: 30px 40px;
+	box-sizing: border-box;
+}

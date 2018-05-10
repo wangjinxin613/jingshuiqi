@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="css/login.css" media="all" />
+</head>
+<body>
+<div class="login">
+	<h1>管理登录</h1>
+	<form class="layui-form">
+		<input type="hidden" name="gotopage" value="<?php if(!empty($gotopage)) echo RemoveXSS($gotopage);?>" />
+		<input type="hidden" name="dopost" value="login" />
+		<div class="layui-form-item">
+			<input class="layui-input" name="userid" placeholder="用户名" lay-verify="required" type="text" autocomplete="off">
+		</div>
+		<div class="layui-form-item">
+			<input class="layui-input" name="pwd" placeholder="密码" lay-verify="required" type="password" autocomplete="off">
+		</div>
+		<?php
+		if(preg_match("/6/",$safe_gdopen))
+		{
+		?>
+		<div class="layui-form-item form_code">
+			<input class="layui-input" name="validate" placeholder="验证码" lay-verify="required" type="text" autocomplete="off">
+			<div class="code"><img src="../include/vdimgck.php" align="absmiddle" onclick="this.src='../include/vdimgck.php?tag='+Math.random();"></div>
+		</div>
+		<?php
+		}
+		?>
+		<button class="layui-btn login_btn" lay-submit="" lay-filter="login">登录</button>
+	</form>
+</div>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+</body>
+</html>

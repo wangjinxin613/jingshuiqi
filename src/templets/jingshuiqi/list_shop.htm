@@ -1,0 +1,40 @@
+{dede:include filename="head.htm"/}
+<!-- 内容区  -->
+<aside class="product-aside">
+    <div class="prod-list">
+        <nav>
+            <ul>
+                <li {dede:field name='typeid' runphp="yes"}(@me=="")? @me=" class='acti'":@me="";{/dede:field}><a href="/product" >全部</a></li>
+
+                {dede:channel type='son' currentstyle='<li class="acti"><a href="~typelink~">~typename~</a></li>'}
+                    <li><a href="[field:typeurl/]">[field:typename/]</a></li>
+                {/dede:channel}
+
+
+            </ul>
+        </nav>
+        <section class="prod-serch">
+            <input type="input" placeholder="Search">
+        </section>
+        <section class="prod wrap">
+            {dede:list pagesize='8'}
+            <a href="[field:arcurl/]">
+            <div class="single">
+                <img src="[field:litpic/]">
+                <div class="beijing">
+                    [field:title/]
+                </div>
+            </div>
+
+            {/dede:list}
+
+        </section>
+    </div>
+    <!-- 分页 -->
+    <section class="page">
+        <ul class="pagelist">
+            {dede:pagelist listitem="pre,next,pageno" listsize="5"/}
+        </ul>
+    </section>
+</aside>
+{dede:include filename="footer.htm"/}

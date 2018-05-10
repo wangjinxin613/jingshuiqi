@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/admin.css" media="all" />
+<style>
+.layui-form-pane .layui-form-label{width:120px;text-align:right;}
+.layui-form-pane .layui-input-block{margin-left:120px;}
+</style>
+</head>
+<body class="childrenBody">
+<div class="x-nav">
+	<span class="layui-breadcrumb">
+	  <a href="index_body.php">首页</a>
+	  <a href="catalog_main.php">栏目管理</a>
+	  <a><cite>批量增加栏目</cite></a>
+	</span>
+	<a class="layui-btn layui-btn-small refresh" href="javascript:location.replace(location.href);" title="刷新"><i class="iconfont icon-refresh" style="line-height:30px"></i></a>
+</div>
+<form name="form1" action="catalog_add.php" method="post" class="layui-form layui-form-pane layui-mt-10">
+<input type="hidden" name="dopost" value="savequick" />
+<input type="hidden" name="savetype" value="" id="savetype"/>
+
+<div class="layui-form-item" pane>
+	<label class="layui-form-label">是否支持投稿</label>
+	<div class="layui-input-block">
+		<input type="radio" name="issend" value="0" title="不支持">
+		<input type="radio" name="issend" value="1" title="支持" checked>
+	</div>
+</div>
+<div class="layui-form-item" pane>
+	<label class="layui-form-label">目录保存位置</label>
+	<div class="layui-input-block">
+<?php
+$pardir = '{cmspath}'.$cfg_arcdir;
+if(!empty($typedir)) $pardir = $typedir.'/';
+$pardir = preg_replace("#\/{1,}#", '/', $pardir);
+?>
+		<input type="radio" name="referpath" id="truepath1" value="parent" title="默认HMTL目录( <?php echo $pardir;?> )" checked>
+		<input type="radio" name="referpath" id="truepath2" value="cmspath" title="CMS根目录">
+		<input name="nextdir" type="hidden" id="nextdir" value="<?php echo $pardir; ?>" />
+		<span id="pathtype" style="display:none"><input type="radio" name="referpath" id="truepath3" value="typepath" title="隶属栏目所属的目录" /></span>
+	</div>
+</div>
+<div class="layui-form-item">
+	<label class="layui-form-label">隶属栏目</label>
+	<div class="layui-input-inline">
+		<select name="reid" id="reid" lay-filter="reid">
+			<option value='0'>选择所属目录... </option>
+			<?php echo $typeOptions;?>
+		</select>
+	</div>
+	<div class="layui-form-mid layui-word-aux">
+		(默认为顶级栏目)
+	</div>
+</div>
+<div class="layui-form-item">
+	<label class="layui-form-label">内容模型</label>
+	<div class="layui-input-inline">
+		<select name="channeltype" id="channeltype">
+			<?php
+			foreach($channelArray as $k=>$arr)
+			{
+			if($k==$channelid) echo "    <option value='{$k}' selected>{$arr['typename']}|{$arr['nid']}</option>\r\n";
+			else  echo "    <option value='{$k}'>{$arr['typename']}|{$arr['nid']}</option>\r\n";
+			}
+			?>
+		</select>
+	</div>
+</div>
+<div class="layui-form-item" pane>
+	<label class="layui-form-label">栏目列表选项</label>
+	<div class="layui-input-block">
+		<input type="radio" name="isdefault" value="1" title="链接到默认页" checked>
+		<input type="radio" name="isdefault" value="0" title="链接到列表第一页">
+		<input type="radio" name="isdefault" value="-1" title="使用动态页">
+	</div>
+</div>
+<div class="layui-form-item">
+	<label class="layui-form-label">默认页的名称</label>
+	<div class="layui-input-block">
+		<input type="text" class="layui-input" name="defaultname" value="index.html">
+	</div>
+</div>
+<div class="layui-form-item" id="helpvar2" style="display:none;margin-top:-15px;margin-bottom:0px;">
+	<div class="layui-input-block">
+		<div class="layui-form-mid layui-word-aux">
+			{Y}、{M}、{D} 年月日<br/>
+			{timestamp} INT类型的UNIX时间戳<br/>
+			{aid} 文章ID<br/>
+			{pinyin} 拼音+文章ID<br/>
+			{py} 拼音部首+文章ID<br/>
+			{typedir} 栏目目录 <br/>
+			{cc} 日期+ID混编后用转换为适合的字母 <br/>
+		</div>
+	</div>
+</div>
+<div class="layui-form-item">
+	<label class="layui-form-label">文章命名规则</label>
+	<div class="layui-input-inline" style="width:250px;">
+		<input type="text" name="namerule" id="namerule" required lay-verify="required" value="{typedir}/{Y}{M}{D}/{aid}.html" class="layui-input">
+	</div>
+	<div class="layui-form-mid layui-word-aux">
+		<a href="javascript:;" onClick="ShowHide('helpvar2')">查看支持变量</a>
+	</div>
+</div>
+<div class="layui-form-item" id="helpvar3" style="display:none;margin-top:-15px;margin-bottom:0px;">
+	<div class="layui-input-block">
+		<div class="layui-form-mid layui-word-aux">
+			{page} 列表的页码
+		</div>
+	</div>
+</div>
+<div class="layui-form-item">
+	<label class="layui-form-label">列表命名规则</label>
+	<div class="layui-input-inline" style="width:250px;">
+		<input type="text" name="namerule2" id="namerule2" required lay-verify="required" value="{typedir}/list_{tid}_{page}.html" class="layui-input">
+	</div>
+	<div class="layui-form-mid layui-word-aux">
+		<a href="javascript:;" onClick="ShowHide('helpvar3')">查看支持变量</a>
+	</div>
+</div>
+
+<table class="layui-table" id="addQuick">
+<colgroup>
+<col width="80">
+<col width="200">
+<col>
+<col width="100">
+</colgroup>
+<thead>
+<tr>
+	<th>
+		排序
+	</th>
+	<th>
+		顶级栏目名称
+	</th>
+	<th>
+		子栏目(用"目录名称1,目录名称2..."这样表示多个栏目)
+	</th>
+	<th>
+		<button type="button" class="layui-btn layui-btn-small" id="add"><i class="layui-icon">&#xe654;</i>添加</button>
+	</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td class="rank">
+		<input type="hidden" name="posttype" value="1" class="pubinputs" />
+		<input class="layui-input pubinputs" type="text" name="rank" id="rank" value="1" style="text-align:center;padding-left:0;">
+	</td>
+	<td>
+		<input type="text" name="toptype" id="toptype" class="layui-input">
+	</td>
+	<td>
+		<input type="text" name="sontype" id="sontype" class="layui-input">
+	</td>
+	<td>
+		<button type="button" class="layui-btn layui-btn-small layui-btn-danger" id="add"><i class="layui-icon">&#x1006;</i>删除</button>
+	</td>
+</tr>
+<?php for($i=2;$i<=10;$i++) { ?>
+<tr class="repeat">
+	<td class="rank">
+		<input type="hidden" name="posttype<?php echo $i; ?>" value="<?php echo $i; ?>" class="pubinputs" />
+		<input class="layui-input pubinputs" type="text" name="rank<?php echo $i; ?>" id="rank<?php echo $i; ?>" value="<?php echo $i; ?>" style="text-align:center;padding-left:0;">
+	</td>
+	<td>
+		<input class="layui-input pubinputs" type="text" name="toptype<?php echo $i; ?>" id="toptype<?php echo $i; ?>">
+	</td>
+	<td>
+		<input class="layui-input pubinputs" type="text" name="sontype<?php echo $i; ?>" id="sontype<?php echo $i; ?>">
+	</td>
+	<td>
+		<button type="button" class="layui-btn layui-btn-small layui-btn-danger" id="add"><i class="layui-icon">&#x1006;</i>删除</button>
+	</td>
+</tr>
+<?php } ?>
+</tbody>
+</table>
+<table class="layui-table" id="addQuickRel" style="display:none">
+<colgroup>
+<col width="80">
+<col>
+<col width="100">
+</colgroup>
+<thead>
+<tr>
+	<th>
+		排序
+	</th>
+	<th>
+		栏目名称
+	</th>
+	<th>
+		<button type="button" class="layui-btn layui-btn-small" id="addrel"><i class="layui-icon">&#xe654;</i>添加</button>
+	</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td class="rank">
+		<input type="hidden" name="posttype" value="1" class="pubinputs" />
+		<input class="layui-input pubinputs" type="text" name="rank" id="rank" value="1" style="text-align:center;padding-left:0;">
+	</td>
+	<td>
+		<input type="text" name="reltype" id="reltype" class="layui-input">
+	</td>
+	<td>
+		<button type="button" class="layui-btn layui-btn-small layui-btn-danger" id="add"><i class="layui-icon">&#x1006;</i>删除</button>
+	</td>
+</tr>
+<?php for($i=2;$i<=10;$i++) { ?>
+<tr class="repeat">
+	<td class="rank">
+		<input type="hidden" name="posttype<?php echo $i; ?>" value="<?php echo $i; ?>" class="pubinputs" />
+		<input class="layui-input pubinputs" type="text" name="rank<?php echo $i; ?>" id="rank<?php echo $i; ?>" value="<?php echo $i; ?>" style="text-align:center;padding-left:0;">
+	</td>
+	<td>
+		<input class="layui-input pubinputs" type="text" name="reltype<?php echo $i; ?>" id="reltype<?php echo $i; ?>">
+	</td>
+	<td>
+		<button type="button" class="layui-btn layui-btn-small layui-btn-danger" id="add"><i class="layui-icon">&#x1006;</i>删除</button>
+	</td>
+</tr>
+<?php } ?>
+</tbody>
+</table>
+<div class="layui-form-item">
+	<div class="layui-input-block">
+		<button class="layui-btn">立即提交</button>
+		<a class="layui-btn layui-btn-primary" href="javascript:;" onClick='history.go(-1);'>返回</a>
+	</div>
+</div>
+</form>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/catalog.js"></script>
+<script language="javascript">
+function ShowHide(objname){
+  var obj = document.getElementById(objname);
+  if(obj.style.display == "block" || obj.style.display == "")
+	   obj.style.display = "none";
+  else
+	   obj.style.display = "block";
+}
+function ShowObj(objname){
+   var obj = document.getElementById(objname);
+	 obj.style.display = "block";
+}
+function HideObj(objname){
+  var obj = document.getElementById(objname);
+	obj.style.display = "none";
+}
+</script>
+</body>
+</html>

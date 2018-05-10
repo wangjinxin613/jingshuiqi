@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/admin.css" media="all" />
+</head>
+<body class="childrenBody">
+<div class="x-nav">
+	<span class="layui-breadcrumb">
+	  <a href="index_body.php">首页</a>
+	  <a><cite>栏目管理</cite></a>
+	</span>
+	<a class="layui-btn layui-btn-small refresh" href="javascript:location.replace(location.href);" title="刷新"><i class="iconfont icon-refresh" style="line-height:30px"></i></a>
+</div>
+<div class="layui-mt-10">
+	<div class="layui-inline">
+		<a class="layui-btn layui-btn-small layui-btn-normal" href="catalog_add.php?listtype=all">增加顶级栏目</a>
+	</div>
+	<div class="layui-inline">
+		<a class="layui-btn layui-btn-small layui-btn-warm" href="catalog_add.php?dopost=quick">批量增加栏目</a>
+	</div>
+	<div class="layui-inline">
+		<a class="layui-btn layui-btn-small upcatcache">更新栏目缓存</a>
+	</div>
+	<div class="layui-inline">
+		<a class="layui-btn layui-btn-small layui-btn-danger" href="makehtml_list.php">更新栏目HTML</a>
+	</div>
+</div>
+<div class="layui-form news_list">
+<form name='form1' method='post' action='catalog_do.php?dopost=upRankAll'>
+	<table class="layui-table" lay-skin="line">
+	<colgroup>
+	<col width="60">
+	<col width="70">
+	<col width="60">
+	<col width="25%">
+	<col width="10%">
+	<col>
+	</colgroup>
+	<thead>
+	<tr>
+		<th>
+			折叠
+		</th>
+		<th>
+			序号
+		</th>
+		<th>
+			ID
+		</th>
+		<th style="text-align:left;">
+			栏目名称
+		</th>
+		<th style="text-align:left;">
+			内容模型
+		</th>
+		<th style="text-align:left;">
+			操作
+		</th>
+	</tr>
+	</thead>
+	<tbody>
+<tr>
+<td colspan="6" style="padding:0;border:0;">
+<?php
+if(empty($opendir)) $opendir=-1;
+if($userChannel>0) $opendir=$userChannel;
+$tu = new TypeUnit();
+$tu->ListAllType($userChannel,$opendir);
+?>
+</td>
+</tr>
+	</tbody>
+	</table>
+
+			<button class="layui-btn" lay-submit="" lay-filter="upRankAll">更新排序</button>
+			<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+
+
+	</form>
+</div>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/catalog.js"></script>
+<script type="text/javascript" src="js/layuiex.js"></script>
+<script language="javascript" src="js/global.js"></script>
+<script language="javascript" src="js/context_menu.js"></script>
+<script language="javascript" src="js/ieemu.js"></script>
+<script language="javascript" src="js/dialog.js"></script>
+<script language="javascript" src="js/dedeajax2.js"></script>
+<script type="text/javascript">
+function LoadSuns(ctid,tid)
+{
+	if($DE(ctid).innerHTML.length < 10)
+	{
+		$DE('img'+tid).className = 'iconfont icon-minus';
+		var myajax = new DedeAjax($DE(ctid));
+		myajax.SendGet('catalog_do.php?dopost=GetSunLists&cid='+tid);
+	}
+	else
+	{ 
+		showHide(ctid,tid); 
+	}
+}
+function showHide(objname,tid)
+{
+    
+    if($DE(objname).style.display=="none")
+    {
+		
+        $DE('img'+tid).className = 'iconfont icon-minus';
+        $DE(objname).style.display = BROWSER.firefox? "" : "block";
+    }
+	else
+	{
+        $DE('img'+tid).className = 'iconfont icon-menu';
+        $DE(objname).style.display="none";
+    }
+}
+if(moz)
+{
+	extendEventObject();
+	extendElementModel();
+	emulateAttachEvent();
+}
+</script>
+</body>
+</html>

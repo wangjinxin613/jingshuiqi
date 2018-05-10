@@ -1,0 +1,261 @@
+<!-- 引入头部文件 -->
+{dede:include filename="head.htm"/}
+<!--轮播图区域-->
+<div class="banner wow bounceInUp bg-red">
+    <div class="carousel" @mouseenter="enter" @mouseleave="leave">
+        <transition-group tag="ul" name="image" enter-active-class="animated lightSpeedIn" leave-active-class="animated lightSpeedOut">
+            <li v-for='(image,index) in img' :key='index' v-show="index === mark">
+                <a href="javascript:;">
+                    <img :src="image">
+                </a>
+            </li>
+        </transition-group>
+        <div class="bullet">
+            <span v-for="(item,index) in img.length" :class="{'active':index === mark}" @click="change(index)" :key="index"></span>
+        </div>
+        <div class="switch">
+            <span class="prev" @click="prev">&lt;</span>
+            <span class="next" @click="next">&gt;</span>
+        </div>
+    </div>
+</div>
+<!-- 产品展示 -->
+<div class="product index-list">
+    <h1>产品展示</h1>
+    <div class="tip">
+        <div class="border-hr"></div>
+        <div>Product display</div>
+        <div class="border-hr"></div>
+    </div>
+
+    <ul class="function">
+        <li class="acti">全部</li>
+        {dede:channelartlist row='1' typeid='1' }
+        {dede:channel type='son' noself='yes' }
+        <li>[field:typename/]</li>
+        {/dede:channel}
+        {/dede:channelartlist}
+    </ul>
+
+    <div class="wrap product-list wow pulse bg-blue" data-wow-iteration="2" data-wow-duration="0.3s">
+        {dede:arclist titlelen='42' row='8' typeid='1'}
+        <div class="single">
+            <a href="[field:arcurl /]">
+                <img src="[field:litpic/]">
+                <p>[field:title /]</p>
+            </a>
+        </div>
+        {/dede:arclist}
+    </div>
+
+    {dede:channelartlist row='5' typeid='1'}
+
+
+    <div class="wrap product-list none " data-wow-iteration="3" data-wow-duration="0.3s">
+        {dede:arclist titlelen='42' row='8' type='son'}
+        <div class="single">
+            <a href="[field:arcurl /]">
+            <img src="[field:litpic/]">
+            <p>[field:title /]</p>
+            </a>
+        </div>
+
+        {/dede:arclist}
+    </div>
+
+    {/dede:channelartlist}
+
+</div>
+<!--工程案例-->
+<div class="case index-list">
+    <h1>工程案例</h1>
+    <div class="tip">
+        <div class="border-hr"></div>
+        <div>Engineering case</div>
+        <div class="border-hr"></div>
+    </div>
+    <!-- 工程案例切换nav -->
+    <ul class="function">
+        <li class="acti">全部</li>
+        {dede:channelartlist row='1' typeid='5' }
+            {dede:channel type='son' noself='yes' }
+                <li>[field:typename/]</li>
+            {/dede:channel}
+        {/dede:channelartlist}
+    </ul>
+    <div class="case-list wrap">
+        <div class="content-left">
+            <h2>学校饮水工程案例</h2>
+            <p>学校饮水目前存在问题：1、卫生不达标；2、设备不安全；3、水质不合格；4、供水数量不足；5、水龙头数量不足；鸿效兴华饮水机为您提供专业解决方案： 一、卫生检查达标：近十年来金泉涞饮水机的卫生指标检查全部合格</p>
+            <a href="/case"><p>More...</p></a>
+        </div>
+        <div class="content-right wow bounceInLeft bg-green">
+            <img src="{dede:global.cfg_templets_skin/}/img/company.png" />
+        </div>
+    </div>
+    {dede:channelartlist row='5' typeid='5'}
+    {dede:arclist titlelen='42' row='5' type='son'}
+    <div class="case-list wrap none" >
+
+
+            <div class="content-left">
+                <h2>[field:title /]</h2>
+                <p>[field:description/]</p>
+                <a href="[field:arcurl /]"> <p>More...</p> </a>
+            </div>
+            <div class="content-right">
+                <img src="[field:litpic/]" />
+            </div>
+        </a>
+
+    </div>
+    {/dede:arclist}
+    {/dede:channelartlist}
+
+</div>
+<!--行业动态-->
+<div class="trade index-list">
+    <h1>行业动态</h1>
+    <div class="tip">
+        <div class="border-hr"></div>
+        <div>PingFang-SC-Medium</div>
+        <div class="border-hr"></div>
+    </div>
+    <div class="trade-list wrap">
+        {dede:arclist pagesize='8' typeid='2' row ='8' titlelen='50'}
+
+            <div class="single">
+                <a href="[field:arcurl/]">
+                    <img src="[field:litpic/]">
+                    <div class="content">
+                        <h2>[field:title/]</h2>
+                        <p class="content-text">[field:description/]</p>
+                        <p>[field:pubdate function="GetDateTimeMK(@me)"/] </p>
+                    </div>
+                </a>
+            </div>
+
+        {/dede:arclist}
+
+        <div class="clear"></div>
+    </div>
+</div>
+<!--关于鸿效-->
+<div class="case index-list">
+    <h1>关于鸿效</h1>
+    <div class="tip">
+        <div class="border-hr"></div>
+        <div>About The Enterprise</div>
+        <div class="border-hr"></div>
+    </div>
+    <div class="case-list wrap" style="margin-top: 45px;">
+        <div class="content-right wow bounceInRight bg-blue">
+            <img src="{dede:global.cfg_templets_skin/}/img/company.png" />
+        </div>
+        <div class="content-left">
+            <h2>鸿效兴华（深圳）科技有限公司</h2>
+            <p>
+                鸿效兴华（深圳）科技有限公司是一家专业从事中高层楼宇加压供水、自来水厂叠压供水、中央空调水泵改造的emc（能源合同管理）公司。
+            公司的运营，是引进国际先进的emc机制，结合资本、管理、技术集成与国内外优质的合作伙伴等优势。
+            我司开发的产品“智能静音节能水泵”已获得了国家知识产权局的专利证书，公司所做的节能改造项目已达几百个，平均节电率达70%左右。
+            我司目前已在北京，上海，天津，武汉，成都，南宁，山东，河北，东北等地开设多家分公司及办事处。
+            </p>
+            <a href="/about"><p style="text-align:right">More...</p></a>
+        </div>
+
+    </div>
+    <div class="clear"></div>
+</div>
+{dede:include filename="footer.htm"/}
+</body>
+<script src="{dede:global.cfg_templets_skin/}/js/vue.min.js"></script>
+<script>
+    /**
+     * 轮播图
+     */
+    var vm = new Vue({
+        el: '.carousel',
+        data: {
+            mark: 0,
+            img: [
+                {dede:arclist titlelen='42' row='8' typeid='14'}
+
+                '[field:litpic/]',
+
+                {/dede:arclist}
+
+            ],
+            url:[
+
+            ],
+            time: null
+        },
+        methods: {
+            change(i) {
+                this.mark = i;
+            },
+            prev() {
+                this.mark--;
+                if(this.mark === -1) {
+                    this.mark = 3;
+                    return
+                }
+            },
+            next() {
+                this.mark++;
+                if(this.mark === 4) {
+                    this.mark = 0;
+                    return
+                }
+            },
+            autoPlay() {
+                this.mark++;
+                if(this.mark === 4) {
+                    this.mark = 0;
+                    return
+                }
+            },
+            play() {
+                this.time = setInterval(this.autoPlay, 3000);
+            },
+            enter() {
+                console.log('enter')
+                clearInterval(this.time);
+            },
+            leave() {
+                console.log('leave')
+                this.play();
+            }
+        },
+        created() {
+            this.play()
+        }
+    })
+</script>
+<script>
+    //产品展示和工程案例按钮去切换
+    $(function() {
+        $(".function").each(function (index,nextAll) {
+            //给切换的文字nav绑定一个key
+            for(var i = 0;i < $(nextAll).children().length;i ++) {
+                $(nextAll).children().eq(i).attr("key",i);
+            }
+        })
+
+        $(".function li").click(function() {
+            //切换区的大div
+            $(this).parents(".function").children("li").removeClass("acti");
+            $(this).addClass("acti");
+            var now = $(this).attr("key");
+            $(this).parents(".function").nextAll().addClass("none");
+            $(this).parents(".function").nextAll().eq(now).removeClass("none");
+        });
+    });
+</script>
+<script type="text/javascript" src="{dede:global.cfg_templets_skin/}/js/wow.min.js"></script>
+<script type="text/javascript">
+    if(!(/msie [6|7|8|9]/i.test(navigator.userAgent))) {
+        new WOW().init();
+    };
+</script>
+</html>

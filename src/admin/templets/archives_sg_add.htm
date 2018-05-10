@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/admin.css" media="all" />
+<script language="javascript" src="js/dedeajax2.js"></script>
+<script language='javascript' src="js/main.js"></script>
+<script language="javascript">
+<!--
+function checkSubmit()
+{
+  if(document.form1.title.value==""){
+	   alert("<?php echo $cInfos['titlename']; ?>不能为空！");
+	   return false;
+  }
+  if(document.form1.typeid.value==0){
+	   alert("请选择档案的主栏目！");
+	   return false;
+  }
+}
+-->
+</script>
+</head>
+<body class="childrenBody">
+<div class="x-nav">
+	<span class="layui-breadcrumb">
+	  <a href="content_sg_list.php?cid=<?php echo $cid?>&channelid=<?php echo $channelid?>&dopost=listArchives">文章列表</a>
+	  <a><cite>发布文章</cite></a>
+	</span>
+	<a class="layui-btn layui-btn-small refresh" href="javascript:location.replace(location.href);" title="刷新"><i class="iconfont icon-refresh" style="line-height:30px"></i></a>
+</div>
+<form name="form1" action="archives_sg_add.php" enctype="multipart/form-data" method="post" class="layui-form layui-form-pane layui-mt-10">
+<input type="hidden" name="channelid" value="<?php echo $channelid?>" />
+<input type="hidden" name="cid" value="<?php echo $cid?>" />
+<input type="hidden" name="dopost" value="save" />
+	<div class="layui-form-item">
+		<label class="layui-form-label"><?php echo $cInfos['titlename']; ?></label>
+		<div class="layui-input-block">
+			<input name="title" id="title" type="text" class="layui-input" lay-verify="title" placeholder="请输入<?php echo $cInfos['titlename']; ?>">
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+		<label class="layui-form-label">自定义属性</label>
+		<div class="layui-input-block">
+			<?php
+			$dsql->SetQuery("Select * From `#@__arcatt` where att<>'j' And att<>'p' order by sortid asc");
+			$dsql->Execute();
+			while($trow = $dsql->GetObject())
+			{
+				 echo "<input class='np' type='checkbox' name='flags[]' id='flags{$trow->att}' value='{$trow->att}' title='{$trow->attname}[{$trow->att}]'>";
+			}
+			?>
+		</div>
+	</div>
+	<div class="layui-form-item" id="pictable" style='<?php if($cInfos['needpic']==0) echo 'display:none'; ?>'>
+		<div class="layui-inline">		
+			<label class="layui-form-label">缩 略 图</label>
+			<div class="layui-input-block">
+                  <input name="picname" type="text" id="picname" class="layui-input" style="float:left;margin-right:-2px;width:300px;" />
+                  <input type="button" value="本地上传" class="layui-btn" />
+                  <iframe name='uplitpicfra' id='uplitpicfra' src='' width='200' height='200' style='display:none'></iframe>
+                  <span class="litpic_span"><input name="litpic" type="file" id="litpic"  onChange="SeePicNew(this, 'divpicview', 'uplitpicfra', 165, 'article_add.php');" size="1" class='np coolbg'/></span>
+                  <input type="button" name="Submit2" value="站内选择" onClick="SelectImage('form1.picname','small');" class="layui-btn layui-btn-normal"/>
+                  <input type="button" name="Submit2" value="裁剪" onClick="imageCut('picname');" class="layui-btn layui-btn-primary"/>
+                  <input type='checkbox' name='ddisremote' value='1' id='ddisremote' title="远程"/>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<div id='divpicview' class='divpre'></div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">浏览权限</label>
+		<div class="layui-input-inline">
+			<select name="arcrank" id="arcrank" style="width:150px">
+			<?php
+			$urank = $cuserLogin->getUserRank();
+			$dsql->SetQuery("Select * from `#@__arcrank` where adminrank<='$urank'");
+			$dsql->Execute();
+			while($row = $dsql->GetObject())
+			{
+			echo "     <option value='".$row->rank."'>".$row->membername."</option>\r\n";
+			}
+			?>
+			</select>
+		</div>
+	</div>
+	<?php if($cInfos['dfcid']>0)
+	{
+		echo "<input type='hidden' name='typeid' value='{$cInfos['dfcid']}' />\r\n";
+	}
+	else
+	{
+	?>
+	<div class="layui-form-item">
+		<div class="layui-inline">		
+			<label class="layui-form-label">文档主栏目</label>
+			<div class="layui-input-inline">
+				<span id='typeidct'>
+				<?php
+				$typeOptions = GetOptionList($cid,$cuserLogin->getUserChannel(),$channelid);
+				echo "<select name='typeid' id='typeid' style='width:240px'>\r\n";
+				echo "<option value='0'>请选择栏目...</option>\r\n";
+				echo $typeOptions;
+				echo "</select>";
+				?>
+				</span>
+			</div>
+			<div class="layui-form-mid layui-word-aux">
+				<img src='images/menusearch.gif' style='cursor:pointer;' onClick="ShowCatMap(event, this, <?php echo $channelid; ?>, 'typeid')" alt='快捷选择' title='快捷选择' />
+				&nbsp;<a href='catalog_main.php'>【<u>栏目管理</u>】</a>
+				&nbsp;<a href='catalog_add.php?listtype=all'>【<u>增加大栏目</u>】</a>	
+				<?php 
+				if($cfg_remote_site=='Y')
+				{
+				?> 　 
+				<input name="isremote" type="checkbox" id="isremote" value="1" <?php if($cfg_title_site=='Y') echo "checked";?>>是否同步远程发布  <?php GetFtp();?>     <?php
+				}
+				?>  
+			</div>
+		</div>
+	</div>
+	<?php } ?>
+	<?php PrintAutoFieldsAdd($cInfos['fieldset'],'autofield'); ?>
+	<hr>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn">提交保存</button>
+			<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+			<a class="layui-btn layui-btn-primary" href="javascript:;" onClick='history.go(-1);'>返回</a>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/alllist.js"></script>
+</body>
+</html>

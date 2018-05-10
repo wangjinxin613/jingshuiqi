@@ -1,0 +1,40 @@
+<?php
+$z[0]=Array("include","",29,64);
+$z[0][4]['filename']="head.htm";
+$z[1]=Array("channelartlist","\r\n        {dede:channel type='son' noself='yes' }\r\n        <li>[field:typename/]</li>\r\n        {/dede:channel}\r\n        ",1243,1426);
+$z[1][4]['row']="1";
+$z[1][4]['typeid']="1";
+$z[2]=Array("arclist","\r\n        <div class=\"single\">\r\n            <a href=\"[field:arcurl /]\">\r\n                <img src=\"[field:litpic/]\">\r\n                <p>[field:title /]</p>\r\n            </a>\r\n        </div>\r\n        ",1552,1814);
+$z[2][4]['titlelen']="42";
+$z[2][4]['row']="8";
+$z[2][4]['typeid']="1";
+$z[3]=Array("channelartlist","\r\n\r\n\r\n    <div class=\"wrap product-list none \" data-wow-iteration=\"3\" data-wow-duration=\"0.3s\">\r\n        {dede:arclist titlelen='42' row='8' type='son'}\r\n        <div class=\"single\">\r\n            <a href=\"[field:arcurl /]\">\r\n            <img src=\"[field:litpic/]\">\r\n            <p>[field:title /]</p>\r\n            </a>\r\n        </div>\r\n\r\n        {/dede:arclist}\r\n    </div>\r\n\r\n    ",1834,2277);
+$z[3][4]['row']="5";
+$z[3][4]['typeid']="1";
+$z[4]=Array("channelartlist","\r\n            {dede:channel type='son' noself='yes' }\r\n                <li>[field:typename/]</li>\r\n            {/dede:channel}\r\n        ",2627,2826);
+$z[4][4]['row']="1";
+$z[4][4]['typeid']="5";
+$z[5]=Array("global","",3423,3455);
+$z[5][4]['name']="cfg_templets_skin";
+$z[6]=Array("channelartlist","\r\n    {dede:arclist titlelen='42' row='5' type='son'}\r\n    <div class=\"case-list wrap none\" >\r\n\r\n\r\n            <div class=\"content-left\">\r\n                <h2>[field:title /]</h2>\r\n                <p>[field:description/]</p>\r\n                <a href=\"[field:arcurl /]\"> <p>More...</p> </a>\r\n            </div>\r\n            <div class=\"content-right\">\r\n                <img src=\"[field:litpic/]\" />\r\n            </div>\r\n        </a>\r\n\r\n    </div>\r\n    {/dede:arclist}\r\n    ",3509,4043);
+$z[6][4]['row']="5";
+$z[6][4]['typeid']="5";
+$z[7]=Array("arclist","\r\n\r\n            <div class=\"single\">\r\n                <a href=\"[field:arcurl/]\">\r\n                    <img src=\"[field:litpic/]\">\r\n                    <div class=\"content\">\r\n                        <h2>[field:title/]</h2>\r\n                        <p class=\"content-text\">[field:description/]</p>\r\n                        <p>[field:pubdate function=\"GetDateTimeMK(@me)\"/] </p>\r\n                    </div>\r\n                </a>\r\n            </div>\r\n\r\n        ",4330,4863);
+$z[7][4]['pagesize']="8";
+$z[7][4]['typeid']="2";
+$z[7][4]['row']="8";
+$z[7][4]['titlelen']="50";
+$z[8]=Array("global","",5300,5332);
+$z[8][4]['name']="cfg_templets_skin";
+$z[9]=Array("include","",6348,6385);
+$z[9][4]['filename']="footer.htm";
+$z[10]=Array("global","",6409,6441);
+$z[10][4]['name']="cfg_templets_skin";
+$z[11]=Array("arclist","\r\n\r\n                '[field:litpic/]',\r\n\r\n                ",6639,6760);
+$z[11][4]['titlelen']="42";
+$z[11][4]['row']="8";
+$z[11][4]['typeid']="14";
+$z[12]=Array("global","",8742,8774);
+$z[12][4]['name']="cfg_templets_skin";
+
+?>

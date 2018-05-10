@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>{dede:global.cfg_webname/}-{dede:field.title/}</title>
+    <meta name="description" content="{dede:global.cfg_description/}" />
+    <meta name="keywords" content="{dede:global.cfg_keywords/}" />
+    <link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/style/index.css?id=1" />
+    <link rel="stylesheet" href="{dede:global.cfg_templets_skin/}/style/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/style/animate.css">
+    <script src="{dede:global.cfg_templets_skin/}/js/jquery-1.8.1.min.js"></script>
+</head>
+<header>
+    <div class="wrap" style="width: 1300px;">
+        <ul class="logo">
+            <img src="{dede:global.cfg_templets_skin/}/img/logo.png" alt="" />
+        </ul>
+        <ul class="nav">
+            <li>
+                <a href='{dede:global.cfg_cmsurl/}/' {dede:field name=typeid runphp="yes"}(@me=="")? @me=" class='acti'":@me="";{/dede:field}>首页</a>
+            </li>
+            {dede:channel type='top' row='10' currentstyle="<li class='hover'><a href='~typelink~' ~rel~ class='acti'>~typename~</a></li>"}
+                <li><a href='[field:typeurl/]' [field:rel/]>[field:typename/]</a></li>
+            {/dede:channel}
+        </ul>
+    </div>
+</header>

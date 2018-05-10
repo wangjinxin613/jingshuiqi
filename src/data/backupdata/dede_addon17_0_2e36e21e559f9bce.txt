@@ -1,0 +1,5 @@
+INSERT INTO `dede_addon17` VALUES('23','14','','','127.0.0.1','/uploads/180509/1-1P50919242D95.jpg','http://baidu.com');
+INSERT INTO `dede_addon17` VALUES('25','14','','','127.0.0.1','','http://5maos.cn');
+INSERT INTO `dede_addon17` VALUES('24','14','','','127.0.0.1','/uploads/180509/1-1P50919242D95.jpg','http;//5maos.cn');
+INSERT INTO `dede_addon17` VALUES('26','14','','','127.0.0.1','','http://5maos.cn');
+INSERT INTO `dede_addon17` VALUES('27','14','','','127.0.0.1','','http://5maos.cn');

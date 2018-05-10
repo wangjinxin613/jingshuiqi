@@ -1,0 +1,29 @@
+{dede:include filename="head.htm"/}
+
+<!-- 内容区 -->
+<img src="{dede:global.cfg_templets_skin/}/img/news.jpg" style="width: 100%;">
+<aside style="padding: 20px 0;background: #eee;">
+
+    <div class="news wrap">
+        {dede:list pagesize='8'}
+        <a href="[field:arcurl/]">
+            <div class="single">
+                <img src="[field:litpic/]">
+                <div class="news_content">
+                    <h2>[field:title/]</h2>
+                    <p class="content-text">[field:description/]</p>
+                    <p>[field:pubdate function="GetDateTimeMK(@me)"/] </p>
+                </div>
+            </div>
+        </a>
+        {/dede:list}
+        <!-- 分页 -->
+        <section class="page">
+            <ul class="pagelist">
+                {dede:pagelist listitem="pre,next,pageno" listsize="5"/}
+            </ul>
+        </section>
+    </div>
+</aside>
+
+{dede:include filename="footer.htm"/}

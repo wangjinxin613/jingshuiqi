@@ -1,0 +1,15 @@
+{dede:include filename="head.htm"/}
+
+<aside style="padding: 20px 0;background: #eee;">
+    <div class="wrap detail">
+        <h2>{dede:field.title/}</h2>
+        <p>{dede:field.pubdate function="MyDate('Y-m-d H:i',@me)"/} &nbsp; &nbsp; &nbsp; &nbsp; <script src="{dede:field name='phpurl'/}/count.php?view=yes&aid={dede:field name='id'/}&mid={dede:field name='mid'/}" type='text/javascript' language="javascript"></script>
+             人浏览</p>
+        <section class="content-text">
+            {dede:field.body/}
+        </section>
+    </div>
+
+</aside>
+
+{dede:include filename="footer.htm"/}

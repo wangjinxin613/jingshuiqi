@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/admin.css" media="all" />
+</head>
+<body class="childrenBody">
+<fieldset class="layui-elem-field layui-field-title site-title">
+<legend>
+<a name="nob">更新系统缓存</a>
+</legend>
+</fieldset>
+<div class="layui-elem-quote">
+<p>
+本程序作默认会执行下面的操作：
+</p>
+<p>
+1、更新栏目缓存
+2、更新枚举缓存
+3、清理arclist调用缓存
+4、清理过期会员访问历史
+5、删除过期短信
+</p>
+</div>
+<form name="form1" action="sys_cache_up.php" method="get" class="layui-form" target='stafrm'>
+<input type="hidden" name="dopost" value="ok">
+<div class="layui-form-item">
+	<label class="layui-form-label">错误文档</label>
+	<div class="layui-input-block">
+		<input name="uparc" type="checkbox" value="1" title="检测并清理" />
+	</div>
+</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn" type="submit">开始执行</button>
+		</div>
+	</div>
+</form>
+<fieldset class="layui-elem-field layui-field-title site-title">
+<legend>
+<a name="nob">进行状态</a>
+</legend>
+</fieldset>
+<div style="height:100%;overflow:hidden;cursor:default;-moz-user-select:inherit;overflow-x:hidden">
+<iframe name="stafrm" id="stafrm" style="overflow:visible;" frameborder="0" width="100%" height="100%" scrolling="yes" onload="changeFrameHeight()"></iframe>
+</div>
+<script type="text/javascript"> 
+function changeFrameHeight(){
+    var ifm= document.getElementById("stafrm"); 
+    ifm.height=document.documentElement.clientHeight;
+}
+window.onresize=function(){  
+     changeFrameHeight();
+} 
+</script>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/catalog.js"></script>
+</body>
+</html>

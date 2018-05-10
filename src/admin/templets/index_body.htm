@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/index.css" media="all" />
+</head>
+<body class="childrenBody">
+<div class="panel_box row">
+<?php
+$query = " SELECT COUNT(*) AS dd FROM `#@__member` ";
+$row1 = $dsql->GetOne($query);
+$query = " SELECT COUNT(*) AS dd FROM `#@__feedback` ";
+$row2 = $dsql->GetOne($query);
+
+$chArrNames = array();
+$query = "SELECT id, typename FROM `#@__channeltype` ";
+$dsql->Execute('c', $query);
+while($row = $dsql->GetArray('c'))
+{
+	$chArrNames[$row['id']] = $row['typename'];
+}
+$query = "SELECT COUNT(channel) AS dd, channel FROM `#@__arctiny` where channel>0 GROUP BY channel limit 4";
+$allArc = 0;
+$chArr = array();
+$dsql->Execute('a', $query);
+while($row = $dsql->GetArray('a'))
+{
+	$allArc += $row['dd'];
+	$row['typename'] = $chArrNames[$row['channel']];
+	$chArr[] = $row;
+}
+$bg = array('layui-bg-blue','layui-bg-green','layui-bg-orange','layui-bg-cyan');
+$icon = array('&#xe60a;','&#xe634;','&#xe61e;','&#xe61b;');
+foreach($chArr as $key => $row)
+{
+?>
+	<div class="panel col">
+		<a target="main" href="content_list.php?channelid=<?php echo $row['channel']; ?>">
+			<div class="panel_icon <?php echo $bg[$key]; ?>">
+				<i class="layui-icon"><?php echo $icon[$key]; ?></i>
+			</div>
+			<div class="panel_word">
+				<span><?php echo $row['dd']; ?></span>
+				<cite><?php echo $row['typename']; ?></cite>
+			</div>
+		</a>
+	</div>
+<?php
+}
+?>
+	<div class="panel col">
+		<a target="main" href="feedback_main.php">
+			<div class="panel_icon layui-bg-red">
+				<i class="layui-icon">&#xe63a;</i>
+			</div>
+			<div class="panel_word userAll">
+				<span><?php echo $row2['dd']; ?></span>
+				<cite>表单评论</cite>
+			</div>
+		</a>
+	</div>
+	<div class="panel col max_panel">
+		<a target="main" href="member_main.php">
+			<div class="panel_icon layui-bg-green">
+				<i class="layui-icon">&#xe613;</i>
+			</div>
+			<div class="panel_word userAll">
+				<span><?php echo $row1['dd']; ?></span>
+				<cite>会员总数</cite>
+			</div>
+		</a>
+	</div>
+</div>
+<div class="row">
+	<div class="sysNotice col">
+		<blockquote class="layui-elem-quote title">系统基本参数</blockquote>
+		<table class="layui-table">
+			<colgroup>
+				<col width="150">
+				<col>
+			</colgroup>
+			<tbody>
+				<tr>
+					<td>网站域名</td>
+					<td><?php echo $cfg_basehost.' ('.get_server_ip().')'; ?></td>
+				</tr>
+				<tr>
+					<td>网站目录</td>
+					<td><?php echo preg_replace('/(.*)\/{1}([^\/]*)/i', '$1', $cfg_basedir); ?></td>
+				</tr>
+				<tr>
+					<td>操作系统</td>
+					<td><?php echo PHP_OS; ?></td>
+				</tr>
+				<tr>
+					<td>服务引擎</td>
+					<td><?php echo $_SERVER['SERVER_SOFTWARE']; ?></td>
+				</tr>
+				<tr>
+					<td>环境版本</td>
+					<td>PHP <?php echo @phpversion(); ?> / MYSQL <?php echo $mysql_version; ?></td>
+				</tr>
+				<tr>
+					<td>上传限制</td>
+					<td><?php echo get_cfg_var("upload_max_filesize");?></td>
+				</tr>
+				<tr>
+					<td>GD库支持</td>
+					<td><i class="layui-icon"><?php echo (gdversion()>0 ? '&#xe605;' : '&#x1006;'); ?></i></td>
+				</tr>
+				<tr>
+					<td>采集支持</td>
+					<td><i class="layui-icon"><?php echo ($isUrlOpen ? '&#xe605;' : '&#x1006;'); ?></i></td>
+				</tr>
+				<tr>
+					<td>全局变量</td>
+					<td><i class="layui-icon"><?php echo ($registerGlobals ? '&#xe605;' : '&#x1006;'); ?></i></td>
+				</tr>
+				<tr>
+					<td>安全模式</td>
+					<td><i class="layui-icon"><?php echo ($isSafeMode ? '&#xe605;' : '&#x1006;'); ?></i></td>
+				</tr>
+				<tr>
+					<td>魔法函数</td>
+					<td><i class="layui-icon"><?php echo function_exists("magic_quotes_gpc") ? '&#xe605;' : '&#x1006;'; ?></i></td>
+				</tr>
+				<tr>
+					<td>fsockopen</td>
+					<td><i class="layui-icon"><?php echo function_exists("fsockopen") ? '&#xe605;' : '&#x1006;'; ?></i></td>
+				</tr>
+				<tr>
+					<td>其它必须函数</td>
+					<td>
+						<?php
+							$needfunc = array('dir','phpinfo');
+							$n = 0;
+							foreach($needfunc as $k) {
+								if(!function_exists($k)) {
+									echo "<font color='red'>[{$k}×]</font> ";
+									$n++;
+								}
+							}
+							if($n==0) {
+								echo '<i class="layui-icon">&#xe605;</i>';
+							} else {
+							echo '<i class="layui-icon">&#x1006;</i>';
+							}
+						?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="sysNotice col">
+		<blockquote class="layui-elem-quote title">最新文章</blockquote>
+		<table class="layui-table" lay-skin="line">
+			<colgroup>
+				<col>
+				<col width="110">
+			</colgroup>
+			<tbody class="hot_news">
+<?php
+$query = "SELECT arc.id, arc.arcrank, arc.title, arc.typeid, arc.pubdate, arc.channel, ch.editcon, tp.typename  FROM `#@__archives` arc
+		LEFT JOIN `#@__channeltype` ch ON ch.id = arc.channel LEFT JOIN `#@__arctype` tp ON arc.typeid=tp.id
+		 WHERE arc.arcrank<>-2 ORDER BY arc.id DESC LIMIT 0, 13 ";
+$arcArr = array();
+$dsql->Execute('m', $query);
+while($row = $dsql->GetArray('m'))
+{
+	$arcArr[] = $row;
+}
+?>
+<?php
+if(count($arcArr) > 1)
+{
+	foreach($arcArr as $row)
+	{
+		if(trim($row['editcon'])=='') {
+			$row['editcon'] = 'archives_edit.php';
+		}
+		$rowarcrank = $row['arcrank']==-1 ? " <font color='red'>(未审核)</font>" : "";
+		$pubdate = GetDateMk($row['pubdate']);
+		echo "<tr><td align='left'> <a href='javascript:;' data-url='{$row['editcon']}?aid={$row['id']}&channelid={$row['channel']}'>{$row['title']}</a>{$rowarcrank}</td><td>{$pubdate}</td></tr>";
+
+	}
+} else {
+?>
+<tr>
+	<td colspan="2">
+		暂无新增内容
+	</td>
+</tr>
+<?php
+}
+?>
+			</tbody>
+		</table> 
+	</div>
+</div>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

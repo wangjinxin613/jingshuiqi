@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/index.css" media="all" />
+</head>
+<body class="main_body">
+<div class="layui-layout layui-layout-admin">
+	<!-- 顶部 -->
+	<div class="layui-header header">
+		<div class="layui-main">
+			<a href="index.php" class="logo">后台管理</a>
+			<!-- 显示/隐藏菜单 -->
+			<a href="javascript:;" class="iconfont icon-app hideMenu"></a>
+			<!-- 顶部右侧菜单 -->
+			<ul class="layui-nav top_menu">
+				<li class="layui-nav-item">
+					<a target="main" href="sys_cache_up.php"><i class="iconfont icon-eraser"></i><cite>更新缓存</cite></a>
+				</li>
+				<li class="layui-nav-item">
+					<a href="../index.php?upcache=1" target="_blank" class="noAddTab"><i class="iconfont icon-home"></i><cite>前台首页</cite></a>
+				</li>
+				<li class="layui-nav-item" mobile>
+					<a href="exit.php" class="noAddTab"><i class="layui-icon" data-icon="&#x1007;">&#x1007;</i> 退出</a>
+				</li>
+				<li class="layui-nav-item" pc>
+					<a href="javascript:;">
+						<img src="images/face.gif" class="layui-circle" width="35" height="35">
+						<cite><?php echo $cuserLogin->getUserName(); ?></cite>
+					</a>
+					<dl class="layui-nav-child">
+						<dd><a target="main" href="member_view.php?id=<?php echo $cuserLogin->getUserID();?>"><i class="iconfont icon-my"></i><cite>个人资料</cite></a></dd>
+						<dd><a target="main" href="sys_admin_user_edit.php?id=<?php echo $cuserLogin->getUserID();?>&dopost=edit"><i class="iconfont icon-lock"></i><cite>修改密码</cite></a></dd>
+						<dd><a href="exit.php" class="noAddTab"><i class="iconfont icon-information"></i><cite>退出</cite></a></dd>
+					</dl>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- 左侧导航 -->
+	<div class="layui-side layui-bg-black">
+		<div class="navBar layui-side-scroll">
+			<ul class="layui-nav layui-nav-tree">
+				<li class="layui-nav-item layui-this"><a target="main" href="index_body.php"><i class="iconfont icon-home"></i><cite>后台首页</cite></a></li>
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-computer"></i><cite>栏目管理</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="catalog_main.php"><i class="iconfont icon-menu"></i><cite>网站栏目管理</cite></a></dd>
+					<dd><a target="main" href="content_list.php"><i class="iconfont icon-menu"></i><cite>所有文档列表</cite></a></dd>
+					<dd><a target="main" href="content_list.php?arcrank=-1"><i class="iconfont icon-menu"></i><cite>待审核的文档</cite></a></dd>
+					<dd><a target="main" href='content_list.php?mid=".$cuserLogin->getUserID()."'><i class="iconfont icon-menu"></i><cite>我发布的文档</cite></a></dd>
+					<dd><a target="main" href="recycling.php"><i class="layui-icon">&#xe640;</i><cite>内容回收站</cite></a><span class="label"><a target="main" href="archives_do.php?dopost=clear&aid=no&recycle=1"><i class="layui-icon">&#x1006;</i></a></span></dd>
+				</dl>
+				</li>
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-app"></i><cite>内容管理</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+<?php                    
+//载入可发布频道
+$addset = '';
+//检测可用的内容模型
+if($cfg_admin_channel = 'array' && count($admin_catalogs) >0)
+{
+$admin_catalog = join(',', $admin_catalogs);
+$dsql->SetQuery(" SELECT channeltype FROM `#@__arctype` WHERE id IN({$admin_catalog}) GROUP BY channeltype ");
+}
+else
+{
+$dsql->SetQuery(" SELECT channeltype FROM `#@__arctype` GROUP BY channeltype ");
+}
+$dsql->Execute();
+$candoChannel = '';
+while($row = $dsql->GetObject())
+{
+$candoChannel .= ($candoChannel=='' ? $row->channeltype : ','.$row->channeltype);
+}
+if(empty($candoChannel)) $candoChannel = 1;
+$dsql->SetQuery("SELECT id,typename,addcon,mancon FROM `#@__channeltype` WHERE id IN({$candoChannel}) AND id
+<>-1 AND isshow=1 ORDER BY id ASC");
+$dsql->Execute();
+while($row = $dsql->GetObject())
+{
+$addset .="<dd><a target='main' href='{$row->mancon}?channelid={$row->id}'><i class='iconfont icon-menu'></i><cite>{$row->typename}</cite></a><span class='label'><a target='main' href='{$row->addcon}?channelid={$row->id}'><i class='layui-icon'>&#xe654;</i></a></span></dd>";
+}       
+echo $addset;
+?>
+					<dd><a target="main" href="content_s_list.php"><i class="iconfont icon-menu"></i><cite>专题管理</cite></a><span class="label"><a href="spec_add.php" target="main"><i class="layui-icon">&#xe654;</i></a></span></dd>
+				</dl>
+				</li>
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-browser"></i><cite>模型表单</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="mychannel_main.php"><i class="iconfont icon-menu"></i><cite>内容模型管理</cite></a></dd>
+					<dd><a target="main" href="templets_one.php"><i class="iconfont icon-menu"></i><cite>单页文档管理</cite></a></dd>
+					<dd><a target="main" href="stepselect_main.php"><i class="iconfont icon-menu"></i><cite>联动类别管理</cite></a></dd>
+					<dd><a target="main" href="freelist_main.php"><i class="iconfont icon-menu"></i><cite>自由列表管理</cite></a></dd>
+					<dd><a target="main" href="diy_main.php"><i class="iconfont icon-menu"></i><cite>自定义表单</cite></a></dd>
+				</dl>
+				</li>
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-refresh"></i><cite>生成更新</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="makehtml_all.php"><i class="iconfont icon-menu"></i><cite>生成整站</cite></a></dd>
+					<dd><a target="main" href="makehtml_homepage.php"><i class="iconfont icon-menu"></i><cite>生成首页</cite></a></dd>
+					<dd><a target="main" href="makehtml_list.php"><i class="iconfont icon-menu"></i><cite>生成栏目</cite></a></dd>
+					<dd><a target="main" href="makehtml_archives.php"><i class="iconfont icon-menu"></i><cite>生成文档</cite></a></dd>
+					<dd><a target="main" href="makehtml_map_guide.php"><i class="iconfont icon-menu"></i><cite>生成地图|rss|xml</cite></a></dd>
+					<dd><a target="main" href="makehtml_js.php"><i class="iconfont icon-menu"></i><cite>生成js</cite></a></dd>
+					<dd><a target="main" href="makehtml_spec.php"><i class="iconfont icon-menu"></i><cite>生成专题</cite></a></dd>
+				</dl>
+				</li>
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-sitting"></i><cite>系统设置</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="sys_info.php"><i class="iconfont icon-menu"></i><cite>系统基本参数</cite></a></dd>
+					<dd><a target="main" href="sys_admin_user.php"><i class="iconfont icon-menu"></i><cite>系统用户管理</cite></a></dd>
+					<dd><a target="main" href="sys_group.php"><i class="iconfont icon-menu"></i><cite>用户组设定</cite></a></dd>
+					<dd><a target="main" href="sys_multiserv.php"><i class="iconfont icon-menu"></i><cite>服务器分布/远程</cite></a></dd>
+					<dd><a target="main" href="log_list.php"><i class="iconfont icon-menu"></i><cite>系统日志管理</cite></a></dd>
+					<dd><a target="main" href="sys_safe.php"><i class="iconfont icon-menu"></i><cite>验证安全设置</cite></a></dd>
+					<dd><a target="main" href="sys_info_mark.php"><i class="iconfont icon-menu"></i><cite>图片水印设置</cite></a></dd>
+					<dd><a target="main" href="content_att.php"><i class="iconfont icon-menu"></i><cite>自定义文档属性</cite></a></dd>
+					<dd><a target="main" href="soft_config.php"><i class="iconfont icon-menu"></i><cite>软件频道设置</cite></a></dd>
+					<dd><a target="main" href="article_string_mix.php"><i class="iconfont icon-menu"></i><cite>防采集串混淆</cite></a></dd>
+					<dd><a target="main" href="article_template_rand.php"><i class="iconfont icon-menu"></i><cite>随机模板设置</cite></a></dd>
+					<dd><a target="main" href="sys_task.php"><i class="iconfont icon-menu"></i><cite>计划任务管理</cite></a></dd>
+					<dd><a target="main" href="sys_data.php"><i class="iconfont icon-menu"></i><cite>数据库备份/还原</cite></a></dd>
+					<dd><a target="main" href="sys_sql_query.php"><i class="iconfont icon-menu"></i><cite>SQL命令行工具</cite></a></dd>
+					<dd><a target="main" href="sys_verifies.php"><i class="iconfont icon-menu"></i><cite>文件校验[S]</cite></a></dd>
+					<dd><a target="main" href="sys_safetest.php"><i class="iconfont icon-menu"></i><cite>病毒扫描[S]</cite></a></dd>
+					<dd><a target="main" href="sys_repair.php"><i class="iconfont icon-menu"></i><cite>系统错误修复[S]</cite></a></dd>
+				</dl>
+				</li>
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-rest"></i><cite>模板管理</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="templets_main.php"><i class="iconfont icon-menu"></i><cite>默认模板管理</cite></a></dd>
+					<dd><a target="main" href="templets_tagsource.php"><i class="iconfont icon-menu"></i><cite>标签源码管理</cite></a></dd>
+					<dd><a target="main" href="mytag_main.php"><i class="iconfont icon-menu"></i><cite>自定义宏标记</cite></a></dd>
+					<dd><a target="main" href="mytag_tag_guide.php"><i class="iconfont icon-menu"></i><cite>智能标记向导</cite></a></dd>
+					<dd><a target="main" href="tag_test.php"><i class="iconfont icon-menu"></i><cite>全局标记测试</cite></a></dd>
+				</dl>
+				</li>
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-enclosure"></i><cite>附件管理</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="media_add.php"><i class="iconfont icon-menu"></i><cite>上传新文件</cite></a></dd>
+					<dd><a target="main" href="media_main.php"><i class="iconfont icon-menu"></i><cite>附件数据管理</cite></a></dd>
+					<dd><a target="main" href="media_main.php?dopost=filemanager"><i class="iconfont icon-menu"></i><cite>文件式管理器</cite></a></dd>
+				</dl>
+				</li>
+<?php
+//GetMenus($cuserLogin->getUserRank(),'module');
+?>
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-my"></i><cite>会员管理</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="member_main.php"><i class="iconfont icon-menu"></i><cite>注册会员列表</cite></a></dd>
+					<dd><a target="main" href="member_rank.php"><i class="iconfont icon-menu"></i><cite>会员级别设置</cite></a></dd>
+					<dd><a target="main" href="member_scores.php"><i class="iconfont icon-menu"></i><cite>积分头衔设置</cite></a></dd>
+					<dd><a target="main" href="member_model_main.php"><i class="iconfont icon-menu"></i><cite>会员模型管理</cite></a></dd>
+					<dd><a target="main" href="member_pm.php"><i class="iconfont icon-menu"></i><cite>会员短信管理</cite></a></dd>
+					<dd><a target="main" href="member_guestbook.php"><i class="iconfont icon-menu"></i><cite>会员留言管理</cite></a></dd>
+					<dd><a target="main" href="member_info_main.php?type=feed"><i class="iconfont icon-menu"></i><cite>会员动态管理</cite></a></dd>
+					<dd><a target="main" href="member_info_main.php?type=mood"><i class="iconfont icon-menu"></i><cite>会员心情管理</cite></a></dd>
+				</dl>
+				</li>
+				<!--
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-cart"></i><cite>支付工具</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="cards_type.php"><i class="iconfont icon-menu"></i><cite>点卡产品分类</cite></a></dd>
+					<dd><a target="main" href="cards_manage.php"><i class="iconfont icon-menu"></i><cite>点卡产品管理</cite></a></dd>
+					<dd><a target="main" href="member_type.php"><i class="iconfont icon-menu"></i><cite>会员产品分类</cite></a></dd>
+					<dd><a target="main" href="member_operations.php"><i class="iconfont icon-menu"></i><cite>会员消费记录</cite></a></dd>
+					<dd><a target="main" href="shops_operations.php"><i class="iconfont icon-menu"></i><cite>商店订单记录</cite></a></dd>
+					<dd><a target="main" href="sys_payment.php"><i class="iconfont icon-menu"></i><cite>支付接口设置</cite></a></dd>
+					<dd><a target="main" href="shops_delivery.php"><i class="iconfont icon-menu"></i><cite>配货方式设置</cite></a></dd>
+				</dl>
+				</li>-->
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-mail"></i><cite>批量维护</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="content_batch_up.php"><i class="iconfont icon-menu"></i><cite>文档批量维护</cite></a></dd>
+					<dd><a target="main" href="search_keywords_main.php"><i class="iconfont icon-menu"></i><cite>搜索关键词维护</cite></a></dd>
+					<dd><a target="main" href="article_keywords_main.php"><i class="iconfont icon-menu"></i><cite>文档关键词维护</cite></a></dd>
+					<dd><a target="main" href="article_test_same.php"><i class="iconfont icon-menu"></i><cite>重复文档检测</cite></a></dd>
+					<dd><a target="main" href="article_description_main.php"><i class="iconfont icon-menu"></i><cite>自动摘要|分页</cite></a></dd>
+					<dd><a target="main" href="tags_main.php"><i class="iconfont icon-menu"></i><cite>TAG标签管理</cite></a></dd>
+					<dd><a target="main" href="sys_data_replace.php"><i class="iconfont icon-menu"></i><cite>数据库内容替换</cite></a></dd>
+				</dl>
+				</li>
+				<!--
+				<li class="layui-nav-item"><a href="javascript:;"><i class="iconfont icon-download"></i><cite>采集管理</cite><span class="layui-nav-more"></span></a>
+				<dl class="layui-nav-child">
+					<dd><a target="main" href="co_main.php"><i class="iconfont icon-menu"></i><cite>采集节点管理</cite></a></dd>
+					<dd><a target="main" href="co_url.php"><i class="iconfont icon-menu"></i><cite>临时内容管理</cite></a></dd>
+					<dd><a target="main" href="co_get_corule.php"><i class="iconfont icon-menu"></i><cite>导入采集规则</cite></a></dd>
+					<dd><a target="main" href="co_gather_start.php"><i class="iconfont icon-menu"></i><cite>监控采集模式</cite></a></dd>
+					<dd><a target="main" href="co_do.php?dopost=coall"><i class="iconfont icon-menu"></i><cite>采集未下载内容</cite></a></dd>
+				</dl>
+				</li>
+				-->
+			</ul>
+		</div>
+	</div>
+	<!-- 右侧内容 -->
+	<div class="layui-body layui-form">
+		<div class="layui-tab marg0" lay-filter="bodyTab" id="top_tabs_box">
+			<div class="layui-tab-content clildFrame">
+				<div class="layui-tab-item layui-show">
+					<iframe src="index_body.php" id="main" name="main"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 底部 -->
+	<div class="layui-footer footer">
+		<p>Copyright 2017 &copy; <a href="http://5maos.cn" target="_blank">5maos</a> All Rights Reserved. 版权所有</p>
+	</div>
+</div>
+<!-- 移动导航 -->
+<div class="site-tree-mobile layui-hide"><i class="layui-icon">&#xe602;</i></div>
+<div class="site-mobile-shade"></div>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/admin.css" media="all" />
+<style>
+.layui-form-pane .layui-form-label{width:200px;text-align:right;}
+.layui-form-pane .layui-input-block{margin-left:200px;}
+</style>
+</head>
+<body class="childrenBody">
+<div class="x-nav">
+	<span class="layui-breadcrumb">
+	  <a href="index_body.php">首页</a>
+	  <a><cite>系统基本参数</cite></a>
+	</span>
+	<a class="layui-btn layui-btn-small refresh" href="javascript:location.replace(location.href);" title="刷新"><i class="iconfont icon-refresh" style="line-height:30px"></i></a>
+</div>
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+	<ul class="layui-tab-title">
+<?php
+$ds = file(DEDEADMIN.'/inc/configgroup.txt');
+$totalGroup = count($ds);
+$i = 0;
+foreach($ds as $dl)
+{
+$dl = trim($dl);
+if(empty($dl)) continue;
+$dls = explode(',',$dl);
+$i++;
+if($i==1) echo "<li class=\"layui-this\">{$dls[1]}</li>";
+else{
+	echo "<li>{$dls[1]}</li>";
+}
+}
+?>
+		<li>添加新变量</li>
+	</ul>
+
+	<div class="layui-tab-content">
+
+<?php
+$n = 0;
+if(!isset($gp)) $gp = 1;
+foreach($ds as $dl)
+{
+$dl = trim($dl);
+if(empty($dl)) continue;
+$dls = explode(',',$dl);
+$n++;
+?>
+
+		<div class="layui-tab-item<?php if($n==$gp) echo ' layui-show'; ?>">
+<form action="sys_info.php" method="post" name="form1" class="layui-form layui-form-pane">
+<input type="hidden" name="dopost" value="save">
+<?php
+$path = "../templets/";
+$all_files = array_diff(scandir($path),array('..','.','lurd','plus','system','templet-dirlist.inc','templet-filelist.inc','templet-pluslist.inc'));
+$dir = array();
+foreach ($all_files as $i=>$filename)
+{
+	$dir[$i]["filename"] = basename($filename);
+}
+$dsql->SetQuery("Select * From `#@__sysconfig` where groupid='{$dls[0]}' order by aid asc");
+$dsql->Execute();
+$i = 1;
+while($row = $dsql->GetArray())
+{
+if($n==$gp && $row['aid']>712)
+{
+	$inputr = "<span class=\"sysval\" pc><em class=\"zerocopy\">{dede:global.{$row['varname']}/}</em><i class=\"layui-icon sys_del\" data-id=\"{$row['aid']}\" pc>&#x1006;</i></span>";
+}
+else
+{
+	$inputr = "<span class=\"sysval\" pc><em class=\"zerocopy\">{dede:global.{$row['varname']}/}</em></span>";
+}
+$i++;
+?>
+
+				<div class="layui-form-item"<?php if($row['type']=='bool') echo ' pane';?>>
+					<label class="layui-form-label">
+					<?php echo $row['info']; ?>
+					</label>
+					<div class="layui-input-block">
+<?php
+if($row['type']=='bool')
+{
+$c1='';
+$c2 = '';
+$row['value']=='Y' ? $c1=" checked" : $c2=" checked";
+echo "<input type=\"radio\" name=\"edit___{$row['varname']}\" id=\"radio1\" title=\"是\" value=\"Y\"$c1>";
+echo "<input type=\"radio\" name=\"edit___{$row['varname']}\" id=\"radio2\" title=\"否\" value=\"N\"$c2>{$inputr}";
+}
+else if($row['type']=='bstring')
+{
+echo "<textarea name='edit___{$row['varname']}' row='4' id='edit___{$row['varname']}' class='layui-textarea'>".dede_htmlspecialchars($row['value'])."</textarea>{$inputr}";
+}
+else if($row['type']=='number')
+{
+echo "<input type='text' name='edit___{$row['varname']}' id='edit___{$row['varname']}' value='{$row['value']}'  class=\"layui-input\">{$inputr}";
+}
+else if($row['varname'] == 'cfg_df_style')
+{
+echo "<select id='edit___cfg_df_style' name='edit___cfg_df_style'>";
+foreach($dir as $t)
+{
+	if($row['value'] == $t['filename'])
+	{
+		echo "<option selected='selected' value='{$t['filename']}'>{$t['filename']}</option>";
+	}
+	else
+	{
+		echo "<option value='{$t['filename']}'>{$t['filename']}</option>";
+	}
+}
+echo "</select>";
+}
+else if($row['varname'] == 'cfg_html_editor')
+{
+echo "<select id='edit___cfg_html_editor' name='edit___cfg_html_editor'>";
+if($row['value'] == 'ueditor')
+{
+	echo "<option selected='selected' value='ueditor'>ueditor</option><option value='kindeditor'>kindeditor</option><option value='ckeditor'>ckeditor</option>";
+}
+elseif($row['value'] == 'kindeditor')
+{
+	echo "<option selected='selected' value='kindeditor'>kindeditor</option><option value='ueditor'>ueditor</option><option value='ckeditor'>ckeditor</option>";
+}
+else
+{
+	echo "<option selected='selected' value='ckeditor'>ckeditor</option><option value='kindeditor'>kindeditor</option><option value='ueditor'>ueditor</option>";
+}
+echo "</select>";
+}
+else
+{
+$addstr='';
+if ($row['varname']=='cfg_cookie_encode') {
+  $addstr=' <a href="javascript:resetCookieEncode();" style="color:blue">[重新生成]</a>';
+}
+echo "<input type='text' name='edit___{$row['varname']}' id='edit___{$row['varname']}' value=\"".dede_htmlspecialchars($row['value'])."\" class=\"layui-input\">{$addstr}{$inputr}";
+}
+?>
+					</div>
+				</div>
+<?php
+}
+?>
+				<div class="layui-form-item">
+					<button class="layui-btn" lay-submit="" lay-filter="submit">保存</button>
+				</div>
+				</form>
+		</div>
+
+<?php
+}
+?>
+
+
+		<div class="layui-tab-item">
+			<form action="sys_info.php" method="post" name="fadd" class="layui-form layui-form-pane">
+			<input type='hidden' name='dopost' value='add'>
+			<div class="layui-form-item" pane>
+				<label class="layui-form-label">
+					变量类型
+				</label>
+				<div class="layui-input-block">
+					<input type="radio" name="vartype" value="string" title="文本" checked>
+					<input type="radio" name="vartype" value="number" title="数字">
+					<input type="radio" name="vartype" value="bool" title="布尔(Y/N)">
+					<input type="radio" name="vartype" value="bstring" title="多行文本">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<span class="layui-color-red">*</span>参数说明
+				</label>
+				<div class="layui-input-block">
+					<input type="text" name="varmsg" class="layui-input" lay-verify="required" placeholder="中文" autocomplete="off">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					<span class="layui-color-red">*</span>变量名称
+				</label>
+				<div class="layui-input-block">
+					<input type="text" name="nvarname" class="layui-input" lay-verify="required" placeholder="只允许使用英文和下划线" autocomplete="off">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					变量的值
+				</label>
+				<div class="layui-input-block">
+					<input type="text" name="nvarvalue" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					所属分组
+				</label>
+				<div class="layui-input-block">
+<?php
+echo "<select name='vargroup' class=\"newsLook\">\r\n";
+foreach($ds as $dl){
+	$dl = trim($dl);
+	if(empty($dl)) continue;
+	$dls = explode(',',$dl);
+	echo "<option value='{$dls[0]}'>{$dls[1]}</option>\r\n";
+}
+echo "</select>\r\n";
+?>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<button class="layui-btn" lay-submit="" lay-filter="submit">提交</button>
+			</div>
+			</form>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/sysinfo.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/zeroclipboard.js"></script>
+</body>
+</html>

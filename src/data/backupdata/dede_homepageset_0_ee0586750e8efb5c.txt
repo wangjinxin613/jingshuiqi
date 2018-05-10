@@ -1,0 +1,1 @@
+INSERT INTO `dede_homepageset` VALUES('jingshuiqi/index.htm','../index.html','0');

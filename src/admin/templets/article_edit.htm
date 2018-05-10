@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/admin.css" media="all" />
+<link href='css/tb-box.css' rel='stylesheet' type='text/css' />
+<script language="javascript" src="js/dedeajax2.js"></script>
+<script language="javascript" src="js/main.js"></script>
+<script type="text/javascript"src="js/handlers.js"></script>
+<script type="text/javascript" src="../images/swfupload/swfupload.js"></script>
+<script language="javascript" src="js/jquery/jquery.js"></script>
+<script language="javascript" src="js/jquery/ui.core.js"></script>
+<script language="javascript" src="js/jquery/ui.draggable.js"></script>
+<script language='javascript' src='js/tb-box.js'></script>
+<script language="javascript">
+<!--
+var swfu = null;
+var arctype = 'article';
+function checkSubmit()
+{
+	if(document.form1.title.value=='')
+	{
+		alert('文章标题不能为空！');
+		document.form1.title.focus();
+		return false;
+	}
+}
+
+function addVote()
+{
+    tb_show('添加投票', 'vote_add.php?isarc=1&TB_iframe=true&height=460&width=600', false);
+}
+
+function selectVote()
+{
+    tb_show('选取投票','vote_main.php?issel=1&TB_iframe=true&height=460&width=600',false);
+}
+
+
+function viewVote()
+{
+    if($("#voteid").val() != 0)
+    {
+        window.open('<?php echo $cfg_cmsurl;?>/plus/vote.php?dopost=view&aid=' + $("#voteid").val());
+    } else {
+        alert('请选择一个投票');
+        return false;
+    }
+}
+window.onload = function ()
+{
+	swfu = new SWFUpload(
+	{
+		// Backend Settings
+		upload_url: "swfupload.php",
+		post_params: {"PHPSESSID": "<?php echo session_id(); ?>", "dopost" : "", "arctype" : arctype,
+		"arcid":<?php echo $arcRow['id']?>},
+
+		// File Upload Settings
+		file_size_limit : "2 MB",	// 2MB
+		file_types : "*.jpg; *.gif; *.png",
+		file_types_description : "选择 JPEG/GIF/PNG 格式图片",
+		file_upload_limit : "0",
+
+		file_queue_error_handler : fileQueueError,
+		file_dialog_complete_handler : fileDialogComplete,
+		upload_progress_handler : uploadProgress,
+		upload_error_handler : uploadError,
+		upload_success_handler : uploadSuccess,
+		upload_complete_handler : uploadComplete,
+
+		button_image_url : "../images/SmallSpyGlassWithTransperancy_17x18.png",
+		button_placeholder_id : "spanButtonPlaceholder",
+		button_width: '100%',
+		button_height: 26,
+		button_text : '<div class="button" style="background-color:#E5F1CF; height:26px; text-align:center; line-height:26px">上传图片(可多选)</div>',
+		button_text_style : '',
+		button_text_top_padding: 0,
+		button_text_left_padding: 10,
+		button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+		button_cursor: SWFUpload.CURSOR.HAND,
+		
+		// Flash Settings
+		flash_url : "../images/swfupload/swfupload.swf",
+
+		custom_settings : {
+			upload_target : "divFileProgressContainer"
+		},
+		
+		// Debug Settings
+		debug: false
+	});
+};
+
+function addtoEditOld(picurl,pid)
+{
+	var picTitle = jQuery('input[name="picinfook'+pid+'"]').val();
+	var picHTML = '<img src="'+picurl+'" alt="'+picTitle+'"/>';
+	CKEDITOR.instances.body.insertHtml(picHTML);
+}
+
+//删除已经上传的图片
+function delAlbPic(pid){
+	// 同步删除编辑器中插入的图片
+	jQuery("#__tmpbody").html();
+	jQuery.get('swfupload.php?dopost=addtoedit&id=' + pid, function(data)
+	{
+		var iptbody = CKEDITOR.instances.body.getData();
+		jQuery("#__tmpbody").html(iptbody);
+		jQuery("#__tmpbody").find('img').each(function()
+		{
+			if(jQuery(this).attr('src') == data)
+			{
+				//alert(data);
+				jQuery(this).remove();
+			}
+		});
+		CKEDITOR.instances.body.setData(jQuery("#__tmpbody").html()); 
+		jQuery("#__tmpbody").html();
+		var tgobj = $Obj('albCtok'+pid);
+		var myajax = new DedeAjax(tgobj);
+		myajax.SendGet2('swfupload.php?dopost=del&id='+pid);
+		$Obj('thumbnails').removeChild(tgobj);
+	});
+}
+
+function addtoEdit(pid)
+{
+	jQuery.get('swfupload.php?dopost=addtoedit&id=' + pid, function(data)
+	{
+		var picTitle = jQuery('input[name="picinfook'+pid+'"]').val();
+		var picHTML = '<img src="'+data+'" alt="'+picTitle+'"/>';
+		CKEDITOR.instances.body.insertHtml(picHTML);
+	});
+}
+
+//删除已经上传的图片(编辑时用)
+function delAlbPicOld(picfile, pid){
+	var iptbody = CKEDITOR.instances.body.getData();
+	jQuery("#__tmpbody").html(iptbody);
+	jQuery("#__tmpbody").find('img').each(function()
+	{
+		if(jQuery(this).attr('src') == picfile)
+		{
+			//alert(data);
+			jQuery(this).remove();
+		}
+	});
+	CKEDITOR.instances.body.setData(jQuery("#__tmpbody").html()); 
+	jQuery("#__tmpbody").html();
+	
+	var tgobj = $Obj('albold'+pid);
+	var myajax = new DedeAjax(tgobj);
+	myajax.SendGet2('swfupload.php?dopost=delold&picfile='+picfile);
+	$Obj('thumbnailsEdit').removeChild(tgobj);
+}
+-->
+</script>
+</head>
+<body class="childrenBody">
+<div class="x-nav">
+	<span class="layui-breadcrumb">
+	  <a href="catalog_do.php?cid=<?php echo $arcRow['typeid']?>&channelid=<?php echo $channelid?>&dopost=listArchives">文章列表</a>
+	  <a><cite>编辑文章</cite></a>
+	</span>
+	<a class="layui-btn layui-btn-small refresh" href="javascript:location.replace(location.href);" title="刷新"><i class="iconfont icon-refresh" style="line-height:30px"></i></a>
+</div>
+<form name="form1" action="article_edit.php" enctype="multipart/form-data" method="post" class="layui-form layui-form-pane layui-mt-10">
+<input type="hidden" name="dopost" value="save" />
+<input type="hidden" name="channelid" value="<?php echo $channelid?>" />
+<input type="hidden" name="id" value="<?php echo $aid?>" />
+	<div class="layui-form-item">
+		<div class="layui-inline">		
+			<label class="layui-form-label">文章标题</label>
+			<div class="layui-input-inline" style="width:450px;">
+				<input name="title" id="title" type="text" class="layui-input" lay-verify="title" placeholder="请输入文章标题" value="<?php echo $arcRow['title']; ?>">
+			</div>
+		</div>
+		<div class="layui-inline">		
+			<label class="layui-form-label">简略标题</label>
+			<div class="layui-input-inline" style="width:300px;">
+				<input name="shorttitle" id="shorttitle" type="text" class="layui-input" value="<?php echo $arcRow['shorttitle']; ?>">
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+		<label class="layui-form-label">自定义属性</label>
+		<div class="layui-input-block">
+			<?php
+			$dsql->SetQuery("SELECT * FROM `#@__arcatt` ORDER BY sortid ASC");
+			$dsql->Execute();
+			while($trow = $dsql->GetObject())
+			{
+				if(preg_match("#".$trow->att."#", $arcRow['flag']))
+				{
+					echo "<input class='np' type='checkbox' name='flags[]' id='flags{$trow->att}' value='{$trow->att}' checked='checked' title='{$trow->attname}[{$trow->att}]' lay-filter='redirecturl' />";
+				}
+				else
+				{
+					echo "<input class='np' type='checkbox' name='flags[]' id='flags{$trow->att}' value='{$trow->att}' title='{$trow->attname}[{$trow->att}]' lay-filter='redirecturl' />";
+				}
+			}
+			?>
+		</div>
+	</div>
+	<div class="layui-form-item" id="redirecturltr" style="display:<?php echo (empty($addRow['redirecturl']) ? 'none' : 'block');?>">
+		<label class="layui-form-label">跳转网址</label>
+		<div class="layui-input-block">
+			<input type="text" name="redirecturl" id="redirecturl" class="layui-input" value="<?php echo $addRow["redirecturl"]?>">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-inline">		
+			<label class="layui-form-label">TAG标签</label>
+			<div class="layui-input-inline" style="width:300px;">
+				<input name="tags" type="text" id="tags" class="layui-input" value="<?php echo $tags; ?>">
+			</div>
+			<div class="layui-form-mid layui-word-aux">(','号分开，单个标签小于12字节)</div>
+		</div>
+		<div class="layui-inline">		
+			<label class="layui-form-label">权重</label>
+			<div class="layui-input-inline">
+				<input name="weight" type="text" id="weight" class="layui-input" value="<?php echo $arcRow['weight'];?>">
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-inline">		
+			<label class="layui-form-label">缩 略 图</label>
+			<div class="layui-input-block">
+					<input name="picname" type="text" id="picname" class="layui-input" style="float:left;margin-right:-2px;width:300px;" value="<?php echo $arcRow["litpic"]?>">
+					<input type="button" name="Submit" value="浏览..." onClick="SelectImage('form1.picname','');" class="layui-btn layui-btn-normal">
+					<input type="button" name="Submit2" value="裁剪" onClick="imageCut('picname');" class="layui-btn layui-btn-primary"/>
+					<input type='checkbox' name='ddisremote' value='1' title="远程" />
+			</div>
+		</div>
+		<div class="layui-inline">
+			<img src="<?php if($arcRow["litpic"]!="") echo $arcRow["litpic"]; else echo "images/pview.gif";?>" width="150" height="100" id="picview" name="picview">
+		</div>
+	</div>
+	<div class="layui-form-item">
+			<div class="layui-inline">		
+				<label class="layui-form-label">文章来源</label>
+				<div class="layui-input-inline">
+					<input type="text" name="source" id="source" class="layui-input" value="<?php echo $arcRow["source"]?>">
+				</div>
+				<div class="layui-input-inline"><input name="selsource" type="button" id="selsource" value="选择" class="layui-btn layui-btn-normal"></div>
+			</div>
+			<div class="layui-inline">		
+				<label class="layui-form-label">文章作者</label>
+				<div class="layui-input-inline">
+					<input type="text" name="writer" id="writer" class="layui-input" value="<?php echo $arcRow["writer"]?>">
+				</div>
+				<div class="layui-input-inline"><input name="selwriter" type="button" id="selwriter" value="选择" class="layui-btn layui-btn-normal"/></div>
+			</div>
+
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-inline">		
+			<label class="layui-form-label">文章主栏目</label>
+			<div class="layui-input-inline">
+				<span id='typeidct'>
+				<?php
+				$typeOptions = GetOptionList($arcRow['typeid'],$cuserLogin->getUserChannel(),$channelid);
+				echo "<select name='typeid' id='typeid' style='width:240px'>\r\n";
+				if($arcRow["typeid"]=="0") echo "<option value='0' selected>请选择栏目...</option>\r\n";
+				echo $typeOptions;
+				echo "</select>";
+				?>
+				</span>
+			</div>
+			<div class="layui-form-mid layui-word-aux">
+			<img src='images/menusearch.gif' style='cursor:pointer;' onClick="ShowCatMap(event, this, <?php echo $channelid; ?>, 'typeid', '<?php echo $arcRow['typeid']; ?>')" alt='快捷选择' title='快捷选择' />
+			<?php 
+			if($cfg_remote_site=='Y')
+			{
+			?>
+			<input name="isremote" type="checkbox" id="isremote" value="1" <?php if($cfg_title_site=='Y') echo "checked";?> lay-ignore>
+			是否同步远程发布
+			<?php GetFtp();?>
+			<?php
+			}
+			?>
+			</div>
+		</div>
+	</div>
+<?php
+if($cfg_need_typeid2=='Y') {
+?>
+	<div class="layui-form-item" id='typeid2tr'>
+		<label class="layui-form-label">文章副栏目</label>
+		<div class="layui-input-inline">
+			<input type="text" name='typeid2' id='typeid2' class="layui-input" value='<?php echo ($arcRow['typeid2']=='0' ? '' : $arcRow['typeid2']); ?>'>
+		</div>
+		<div class="layui-form-mid layui-word-aux"><img src='images/menusearch2.gif' style='cursor:pointer;' onClick="ShowCatMap(event, this, <?php echo $channelid; ?>, 'typeid2', '<?php echo $arcRow['typeid2']; ?>')" alt='选择副栏目' title='选择副栏目' /></div>
+	</div>
+<?php } ?>
+	<div class="layui-form-item">
+		<label class="layui-form-label">关键字</label>
+		<div class="layui-input-block">
+			<input type="text" name="keywords" id="keywords" value="<?php echo $arcRow["keywords"]?>" class="layui-input" style="float:left;margin-right:-2px;width:300px;">
+			<input type="button" name="Submit" value="浏览..." onClick="SelectKeywords('form1.keywords');" class="layui-btn layui-btn-normal" />
+			<input name="autokey" type="checkbox" onClick="ShowHide('keywords');"; class="np" id="autokey" value="1"<?php if($cfg_arc_autokeyword=='Y') echo ' checked="1" '; ?> lay-ignore/>自动获取，手动填写用","分开
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">内容摘要</label>
+		<div class="layui-input-block">
+			<textarea name="description" id="description" class="layui-textarea"><?php echo $arcRow["description"]?></textarea>
+		</div>
+	</div>
+	<?php
+	PrintAutoFieldsEdit($cInfos['fieldset'],$addRow,'autofield');
+	?>
+	<div class="layui-form-item layui-form-text">
+		<div class="layui-input-block">
+		<table class="layui-table" lay-skin="line">
+			<thead>
+				<tr>
+					<th>
+						<div style='float:left;line-height:28px;'>&nbsp;<strong>文章内容：</strong></div>
+						<div style='float:right;;padding-right:8px'>
+							<input type="button" class="layui-btn layui-btn-small layui-btn-normal" onClick="location.reload();" value="重置">
+						</div>
+						<div style='float:right;padding-right:8px'>
+							<input type="submit" class="layui-btn layui-btn-small" value="保存">
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tr>
+				<td width="100%" height="24" align="left">
+					附加选项：
+					<input name="remote" type="checkbox" class="np" id="remote" value="1" checked lay-ignore> 下载远程图片和资源 &nbsp;&nbsp;
+					<input name="autolitpic" type="checkbox" class="np" id="autolitpic" value="1" checked lay-ignore> 提取第一个图片为缩略图
+				</td>
+			</tr>
+			<tr>
+				<td width="100%" id="arcBody">
+					<?php GetEditor("body",$addRow['body'],450); ?>
+				</td>
+      <td width="255" align="center" valign="top" bgcolor="#FFFFCC" id="mPic" style="display:none"><div class="multipic">
+          <div style="display: block;background-color:#E5F1CF; height:26px"> <span id="spanButtonPlaceholder"></span> </div>
+          <div id="divFileProgressContainer"></div>
+          
+          
+          <div id="thumbnailsEdit" style="width: 254px; height: 535px; background-color: rgb(255, 255, 255); overflow-y: scroll;">
+          <?php
+           //var_dump("SELECT * FROM `#@__uploads` WHERE arcid = {$addRow['aid']}");
+            $dsql->SetQuery("SELECT * FROM `#@__uploads` WHERE arcid = {$addRow['aid']}");
+            $dsql->Execute();
+            while($trow = $dsql->GetArray())
+            {
+          ?>
+            <div class="albCt" id="albold<?php echo $trow['aid'];?>"><img width="120" onclick="addtoEditOld('<?php echo $trow['url'];?>',<?php echo $trow['aid'];?>)" src="<?php echo $trow['url'];?>" style="cursor:pointer"><a href="javascript:delAlbPicOld('<?php echo $trow['url'];?>', <?php echo $trow['aid'];?>)">[删除]</a>
+              <div style="margin-top:10px">注释：
+                <input type="text" style="width:100px;" value="<?php echo $trow['title'];?>" name="picinfook<?php echo $trow['aid'];?>">
+              </div>
+            </div>
+            <?php
+            }
+            ?>
+            <div id="thumbnails"></div>
+          </div>
+          
+        </div></td>
+			</tr>
+		</table>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<label class="layui-form-label">插入投票</label>
+			<div class="layui-input-block">
+				<input type="text" name="voteid" id="voteid" class="layui-input" style="float:left;width:250px;" value="<?php echo $arcRow['voteid']; ?>" /> <input name="selvote" type="button" id="selvote" value="选择投票" onClick="selectVote()" class="layui-btn" /> <input name="addvote" type="button" id="addvote" value="新增投票" onclick="addVote()" class="layui-btn" /> <input type="button" name="viewvote" id="viewvote" value="查看投票" onclick="viewVote()" class="layui-btn" />
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+		<div class="layui-inline">
+			<label class="layui-form-label">评论选项</label>
+			<div class="layui-input-block">
+				<input type='radio' name='notpost' value='0' <?php if($arcRow['notpost']==0) echo " checked='1' "; ?> title="允许评论" />
+				<input type='radio' name='notpost' value='1' <?php if($arcRow['notpost']==1) echo " checked='1' "; ?> title="禁止评论" />
+			</div>
+		</div>
+		<div class="layui-inline">		
+			<label class="layui-form-label">浏览次数</label>
+			<div class="layui-input-inline">
+				<input type='text' name='click' value='<?php echo $arcRow['click']; ?>' class="layui-input" />
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">文章排序</label>
+			<div class="layui-input-inline">
+				<select name="sortup" id="sortup" style="width:150">
+				<?php
+				$subday = SubDay($arcRow["sortrank"],$arcRow["pubdate"]);
+				echo "<option value='0'>正常排序</option>\r\n";
+				if($subday>0) echo "<option value='$subday' selected>置顶 $subday 天</option>\r\n";
+				?>
+				<option value="7">置顶一周</option>
+				<option value="30">置顶一个月</option>
+				<option value="90">置顶三个月</option>
+				<option value="180">置顶半年</option>
+				<option value="360">置顶一年</option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-inline">		
+			<label class="layui-form-label">标题颜色</label>
+			<div class="layui-input-inline">
+				<input name="color" type="text" id="color" class="layui-input" style="width:120px;float:left;" value="<?php echo $arcRow["color"]?>"/>
+				<input name="modcolor" type="button" id="modcolor" value="选取" onClick="ShowColor(event,this)" class="layui-btn" />
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+		<div class="layui-inline">
+			<label class="layui-form-label">发布选项</label>
+			<div class="layui-input-block">
+				<input title="生成静态" type="radio" name="ishtml" value="1"<?php if($arcRow["ismake"]!=-1) echo " checked";?> />
+				<input title="动态浏览" type="radio" name="ishtml" value="0"<?php if($arcRow["ismake"]==-1) echo " checked";?> />
+			</div>
+		</div>
+		<div class="layui-inline">		
+			<label class="layui-form-label">消费金币</label>
+			<div class="layui-input-inline">
+				<input name="money" type="text" id="money" value="0" size="10" class="layui-input" value="<?php echo $arcRow["money"]?>"/>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">阅读权限</label>
+			<div class="layui-input-inline">
+				<select name="arcrank" id="arcrank">
+				<option value='<?php echo $arcRow["arcrank"]?>'> <?php echo $arcRow["rankname"]?> </option>
+				<?php
+				$urank = $cuserLogin->getUserRank();
+
+				$dsql->SetQuery("Select * from `#@__arcrank` where adminrank<='$urank'");
+				$dsql->Execute();
+				while($row = $dsql->GetObject()){
+				echo "     <option value='".$row->rank."'>".$row->membername."</option>\r\n";
+				}
+				?>
+				</select>
+			</div>
+		</div>
+		<div class="layui-inline">		
+			<label class="layui-form-label">更新时间</label>
+			<div class="layui-input-inline">
+				<input type="text" name="pubdate" value="<?php echo GetDateTimeMk(time());?>" class="layui-input newsTime" onclick="layui.laydate({elem: this, istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-inline">		
+			<label class="layui-form-label" style="width:120px;padding-left:0px;">自定义文件名</label>
+			<div class="layui-input-inline">
+				<input type="text" name="filename" id="filename" class="layui-input" value="<?php echo $arcRow["filename"]?>" />
+			</div>
+			<div class="layui-form-mid layui-word-aux">（不包括后缀名如.html等）</div>
+		</div>
+		<?php
+		if(isset($cfg_tamplate_rand) && $cfg_tamplate_rand==1)
+		{
+		?>
+		<div class="layui-inline">
+		<label class="layui-form-label">模板选择</label>
+		<div class="layui-input-inline">
+		<select name='templet' id='templet'>
+		<?php
+		foreach($cfg_tamplate_arr as $k=>$v)
+		{
+			$v = trim($v);
+			echo ($v==$addRow['templet'] ? "<option value='$v' selected>$v</option>\r\n" : "<option value='$v'>$v</option>\r\n");
+		}
+		?>
+		</select>
+		</div>
+		</div>
+		<?php
+		}
+		else{
+			echo "<input type='hidden' name='templet' value='{$addRow['templet']}' />";
+		}
+		?>
+	</div>
+	<hr>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn">提交保存</button>
+			<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+			<a class="layui-btn layui-btn-primary" href="javascript:;" onClick='history.go(-1);'>返回</a>
+		</div>
+	</div>
+</form>
+<script language='javascript'>InitPage();</script>
+<div id="__tmpbody" style="display:none"></div>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/alllist.js"></script>
+</body>
+</html>

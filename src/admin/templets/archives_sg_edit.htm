@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="<?php echo $cfg_soft_lang; ?>">
+<title><?php echo $cfg_softname; ?></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../publics/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="../publics/iconfont/iconfont.css" media="all" />
+<link rel="stylesheet" href="css/admin.css" media="all" />
+<script language="javascript" src="js/dedeajax2.js"></script>
+<script language="javascript" src="js/main.js"></script>
+<script language="javascript">
+<!--
+function checkSubmit()
+{
+   if(document.form1.title.value==""){
+	 alert("<?php echo $cInfos['titlename']; ?>不能为空！");
+	 document.form1.title.focus();
+	 return false;
+  }
+}
+-->
+</script>
+</head>
+<body class="childrenBody">
+<div class="x-nav">
+	<span class="layui-breadcrumb">
+	  <a href="content_sg_list.php?cid=<?php echo $cid?>&channelid=<?php echo $channelid?>&dopost=listArchives">文章列表</a>
+	  <a><cite>更改文档</cite></a>
+	</span>
+	<a class="layui-btn layui-btn-small refresh" href="javascript:location.replace(location.href);" title="刷新"><i class="iconfont icon-refresh" style="line-height:30px"></i></a>
+</div>
+<form name="form1" action="archives_sg_edit.php" enctype="multipart/form-data" method="post" class="layui-form layui-form-pane layui-mt-10">
+<input type="hidden" name="channelid" value="<?php echo $channelid; ?>" />
+<input type="hidden" name="id" value="<?php echo $aid; ?>" />
+<input type="hidden" name="sortrank" value="<?php echo $addRow['senddate']; ?>" />
+<input type="hidden" name="dopost" value="save" />
+	<div class="layui-form-item">
+		<label class="layui-form-label"><?php echo $cInfos['titlename']; ?></label>
+		<div class="layui-input-block">
+			<input name="title" id="title" type="text" class="layui-input" lay-verify="title" placeholder="请输入<?php echo $cInfos['titlename']; ?>" value="<?php echo $addRow['title']; ?>">
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+		<label class="layui-form-label">自定义属性</label>
+		<div class="layui-input-block">
+            <?php
+                $dsql->SetQuery("SELECT * FROM `#@__arcatt` WHERE att<>'j' AND att<>'p' ORDER BY sortid ASC");
+                $dsql->Execute();
+                while($trow = $dsql->GetObject())
+                {
+                    if(preg_match("#".$trow->att."#", $addRow['flag']))
+                    echo "<input class='np' type='checkbox' name='flags[]' id='flags{$trow->att}' value='{$trow->att}' checked='checked' title='{$trow->attname}[{$trow->att}]' />";
+                    else
+                    echo "<input class='np' type='checkbox' name='flags[]' id='flags{$trow->att}' value='{$trow->att}' title='{$trow->attname}[{$trow->att}]' />";
+                }
+            ?>
+		</div>
+	</div>
+	<div class="layui-form-item" id="pictable" style='<?php if($cInfos['needpic']==0) echo 'display:none'; ?>'>
+		<div class="layui-inline">		
+			<label class="layui-form-label">缩 略 图</label>
+			<div class="layui-input-block">
+                  <input name="picname" type="text" id="picname" class="layui-input" style="float:left;margin-right:-2px;width:300px;" value="<?php echo $addRow["litpic"]; ?>" />
+                  <input type="button" value="本地上传" class="layui-btn" />
+                  <iframe name='uplitpicfra' id='uplitpicfra' src='' width='200' height='200' style='display:none'></iframe>
+                  <span class="litpic_span"><input name="litpic" type="file" id="litpic"  onChange="SeePicNew(this, 'divpicview', 'uplitpicfra', 165, 'article_add.php');" size="1" class='np coolbg'/></span>
+                  <input type="button" name="Submit2" value="站内选择" onClick="SelectImage('form1.picname','small');" class="layui-btn layui-btn-normal"/>
+                  <input type="button" name="Submit2" value="裁剪" onClick="imageCut('picname');" class="layui-btn layui-btn-primary"/>
+                  <input type='checkbox' name='ddisremote' value='1' id='ddisremote' title="远程"/>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<img src="<?php if( !empty($addRow["litpic"]) ) echo $addRow["litpic"]; else echo "images/pview.gif"; ?>" width="150" height="100" id="picview" name="picview" />
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">浏览权限</label>
+		<div class="layui-input-inline">
+			<select name="arcrank" id="arcrank" >
+			<option value='<?php echo $addRow["arcrank"]; ?>'><?php echo $addRow["rankname"]; ?></option>
+			<?php
+			$urank = $cuserLogin->getUserRank();
+			$dsql->SetQuery("Select * from `#@__arcrank` where adminrank<='$urank' And rank<>'{$addRow["arcrank"]}' ");
+			$dsql->Execute();
+			while($row = $dsql->GetObject()) {
+			echo "     <option value='".$row->rank."'>".$row->membername."</option>\r\n";
+			}
+			?>
+			</select>
+		</div>
+	</div>
+	<?php if($cInfos['dfcid']>0)
+	{
+	echo "<input type='hidden' name='typeid' value='{$cInfos['dfcid']}' />\r\n";
+	}
+	else
+	{
+	?>
+	<div class="layui-form-item">
+		<div class="layui-inline">		
+			<label class="layui-form-label">文档主栏目</label>
+			<div class="layui-input-inline">
+            <?php
+            $typeOptions = GetOptionList($addRow['typeid'],$cuserLogin->getUserChannel(),$channelid);
+            echo "<select name='typeid' id='typeid' style='width:240px'>\r\n";
+            if($addRow["typeid"]=="0") echo "<option value='0' selected>请选择栏目...</option>\r\n";
+            echo $typeOptions;
+            echo "</select>";
+			?>
+			</div>
+			<div class="layui-form-mid layui-word-aux">
+				<img src='images/menusearch.gif' style='cursor:pointer' onClick="ShowCatMap(event, this, <?php echo $channelid; ?>, 'typeid', '<?php echo $addRow['typeid']; ?>')" alt='快捷选择' title='快捷选择' />
+				<?php 
+				if($cfg_remote_site=='Y')
+				{
+				?> 　 
+				<input name="isremote" type="checkbox" id="isremote" value="1" <?php if($cfg_title_site=='Y') echo "checked";?> title='是否同步远程发布'>  <?php GetFtp();?>     <?php
+				}
+				?>
+			</div>
+		</div>
+	</div>
+	<?php } ?>
+	<?php PrintAutoFieldsEdit($cInfos['fieldset'],$addRow,'autofield'); ?>
+	<hr>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn">提交保存</button>
+			<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+			<a class="layui-btn layui-btn-primary" href="javascript:;" onClick='history.go(-1);'>返回</a>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" src="../publics/layui/layui.js"></script>
+<script type="text/javascript" src="js/alllist.js"></script>
+</body>
+</html>

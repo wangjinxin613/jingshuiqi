@@ -1,0 +1,7 @@
+body{overflow:hidden;background:#f2f2f2;}
+.login{ height:260px;width:260px;padding: 20px;background:#fff;border-radius: 4px;position:absolute;left: 50%;top: 50%; margin:-150px 0 0 -150px;z-index:99;border:5px solid #eee;}
+.login h1{ text-align:center; color:#222; font-size:24px; margin-bottom:20px; }
+.form_code{ position:relative; }
+.form_code input{ text-transform:uppercase; }
+.form_code .code{ position:absolute; right:5px; top:8px; cursor:pointer; }
+.login_btn{ width:100%; }
