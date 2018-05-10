@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/index.css?id=1" />
+		<link rel="stylesheet" type="text/css" href="css/detail.css" />
+		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
+		<style type="text/css">
+			body,
+			ul,
+			li {
+				padding: 0;
+				margin: 0;
+			}
+			
+			ul,
+			li {
+				list-style: none;
+			}
+			
+			body {
+				font-size: 12px;
+			}
+			
+			#demo1 {
+				position: relative;
+				margin: 0 auto;
+				width: 185px;
+				/*  border:1px solid #ccc;*/
+				left: 0px;
+			}
+			
+			#demo1 .img_list {
+				overflow: hidden;
+				position: relative;
+				height: 221px;
+			}
+			/* 根据图片的张数来设定ul的宽度 */
+			
+			.img_list ul {
+				width: 3500px;
+				position: absolute;
+				height: 260px;
+				left: 0px;
+				overflow: hidden;
+			
+			}
+			
+			.img_list li {
+				float: left;
+				width: 185px;
+			}
+			
+			.img_list img {
+				margin: 1px;
+				width: 183px;
+				height: 219px;
+			}
+			/* 图片对应的按钮样式 */
+			
+			.btn_list ul {
+				position: absolute;
+				left: 13px;
+				margin-top: 20px;
+			}
+			
+			.btn_list li {
+				float: left;
+				margin-right: 10px;
+				color: #999;
+				border: 1px solid #ccc;
+			}
+			
+			.btn_list li:hover,
+			.btn_list li.on {
+				cursor: pointer;
+				border: 1px solid #00A2E9;
+			}
+			
+			.btn_list li img {
+				width: 30px;
+				height: 30px;
+				display: block;
+			}
+			/* 左右点击的按钮样式 */
+			
+			#demo1 .toLeft,
+			#demo1 .toRight {
+				display: none;
+				position: absolute;
+				width: 20px;
+				height: 30px;
+				top: 110px;
+				background: url(img/zbbg_24.png) no-repeat 0 -150px;
+			}
+			/* 图片对应的说明*/
+			
+			.img_intro {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: 25px;
+			}
+			
+			.img_intro .img_intro_bg,
+			.img_intro .text {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+			}
+			/*.img_intro .img_intro_bg{
+    background: #000;    
+    opacity: .3;
+    z-index: 999;
+}*/
+			
+			.img_intro .text {
+				padding: 5px 10px;
+				z-index: 1000;
+				color: #999;
+			}
+			
+			#demo1 .toLeft {
+				left: -130px;
+			}
+			
+			#demo1 .toRight {
+				right: -130px;
+				background-position: -50px -150px;
+			}
+		</style>
+		<title></title>
+	</head>
+
+	<body>
+		<header>
+			<div class="wrap" style="width: 1300px;">
+				<ul class="logo">
+					<img src="img/logo.png" alt="" />
+				</ul>
+				<ul class="nav">
+					<li>
+						<a href="" class="acti">首页</a>
+					</li>
+					<li>
+						<a href="product.html">产品</a>
+					</li>
+					<li>
+						<a href="">服务</a>
+					</li>
+					<li>
+						<a href="">动态</a>
+					</li>
+					<li>
+						<a href="">关于</a>
+					</li>
+				</ul>
+			</div>
+		</header>
+		<!--导航栏-->
+		<div class="nav-two">
+			<div class="nav-two-h">
+				<div class="nav-two-body">
+					<a href="#">首页</a>
+					<span>/</span>
+					<a href="#">产品</a>
+					<span>/</span>
+					<a href="#">饮水机</a>
+				</div>
+			</div>
+
+		</div>
+
+		<!--产品展示-->
+		<div class="products">
+			<div class="products-im">
+				<div id="demo1">
+					<div class="img_list">
+						<ul>
+							<li>
+								<a href="#" target="_blank"><img src="img/3.jpg" /></a>
+							</li>
+							<li>
+								<a href="#" target="_blank"><img src="img/ysj.png" /></a>
+							</li>
+							<li>
+								<a href="#" target="_blank"><img src="img/5.jpg" /></a>
+							</li>
+							<li>
+								<a href="#" target="_blank"><img src="img/ysj.png" /></a>
+							</li>
+						</ul>
+					</div>
+
+					<div class="btn_list">
+						<ul>
+						</ul>
+					</div>
+					<!--<div class="img_intro">
+		<div class="text"><a href="#" target="_blank"></a></div>
+		<div class="img_intro_bg"></div>            
+	</div>-->
+					<a href="#" id="toLeft" class="link toLeft"></a>
+					<a href="#" id="toRight" class="link toRight"></a>
+
+				</div>
+
+				<script type="text/javascript">
+					var index = 0;
+					var timer = 0;
+					var ulist = $('.img_list ul');
+					var blist = $('.btn_list ul');
+					var list = ulist.find('li');
+					var llength = list.length; //li的个数，用来做边缘判断
+					var lwidth = $(list[0]).width(); //每个li的长度，ul每次移动的距离
+					var uwidth = llength * lwidth; //ul的总宽度
+
+					function init() {
+						//生成按钮(可以隐藏)
+						addBtn(list);
+						//显示隐藏左右点击开关
+						$('.link').css('display', 'block');
+						$('.link').bind('click', function(event) {
+							var elm = $(event.target);
+							doMove(elm.attr('id'));
+							return false;
+						});
+
+						//初始化描述
+						var text = ulist.find('li').eq(0).find('img').attr('alt');
+						var link = ulist.find('li').eq(0).find('a').attr('href');
+						$('.img_intro .text a').text(text);
+						$('.img_intro .text a').attr('href', link);
+						auto();
+					}
+
+					function auto() {
+						//定时器
+						timer = setInterval("doMove('toRight')", 3000);
+
+						$('.img_list li, .btn_list li').hover(function() {
+							clearInterval(timer);
+						}, function() {
+							timer = setInterval("doMove('toRight')", 3000);
+						});
+					}
+
+					function changeBtn(i) {
+						blist.find('li').eq(i).addClass('on').siblings().removeClass('on');
+						var text = ulist.find('li').eq(i).find('img').attr('alt');
+						var link = ulist.find('li').eq(i).find('a').attr('href');
+						$('.img_intro .text a').text(text);
+						$('.img_intro .text a').attr('href', link);
+					}
+
+					function addBtn(list) {
+						for(var i = 0; i < list.length; i++) {
+							var imgsrc = $(list[i]).find('img').attr('src');
+							var listCon = '<li><img src="' + imgsrc + '""></li>';
+							$(listCon).appendTo(blist);
+							//隐藏button中的数字
+							//list.css('text-indent', '10000px');
+						};
+						blist.find('li').first().addClass('on');
+						blist.find('li').click(function(event) {
+							var _index = $(this).index();
+							doMove(_index);
+						});
+					}
+
+					function doMove(direction) {
+						//向右按钮
+						if(direction == "toRight") {
+							index++;
+							if(index < llength) {
+								uwidth = lwidth * index;
+								ulist.css('left', -uwidth);
+								//ulist.animate({left: -uwidth}, 1000);
+
+							} else {
+								ulist.css('left', '0px');
+								index = 0;
+							};
+							//向左按钮           
+						} else if(direction == "toLeft") {
+							index--;
+							if(index < 0) {
+								index = llength - 1;
+							}
+							uwidth = lwidth * index;
+							ulist.css('left', -uwidth);
+							//ulist.animate({left: -uwidth}, "slow");    
+							//点击数字跳转  
+						} else {
+							index = direction;
+							uwidth = lwidth * index;
+							ulist.css('left', -uwidth);
+						};
+						changeBtn(index);
+					}
+					init();
+				</script>
+			</div>
+			<div class="products-tex">
+				<div class="products-tex-top">免安装速热一体机</div>
+				<div class="middle">
+					<div class="canshu">参数</div>
+
+					<div class="products-tex-middle-l">
+						额定功率：220V<br /> 惨透水压：0.1-0.3VPA
+						<br /> 散热功率：无
+						<br /> 防触电保护类型：I类
+					</div>
+					<div class="products-tex-middle-r">
+						额定频率：50HZ<br /> 平常温度：3 ℃~38 ℃<br /> 出水速度：2.5L/MN
+						<br /> 适应水类：自来水
+
+					</div>
+				</div>
+
+				<div class="products-tex-bot">
+					<div class="a">
+						功能特点
+					</div>
+					<div class="b">
+						1.适用于办公楼，全自动控制，一键式启动，简便快捷。<br /> 2.用工业自动化操控，控制整个系统长期稳定运行。
+						<br /> 3.采透水量大，分离过程没有变相，可靠稳定。
+						<br /> 4.设备能耗小，体积小，操作简单，容易维护，使用寿命长。
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<aside style="background: #eee;padding: 20px 0;;">
+			<div class="show wrap">
+				详情
+			</div>
+		</aside>
+		<!--页面底部
+		-->
+		<footer class="wrap">
+			<img src="img/logo.png" class="foot-logo">
+			<div class="foot-content">
+				<p>深圳市龙岗区平湖街道白坭坑社区横东岭路58号E栋301-302</p>
+				<p>电话：0769-88888888</p>
+				<p>E-mail：474846199@qq.com</p>
+				<p>客服热线：400-8888-888</p>
+			</div>
+			<img src="img/erweima.png" class="erweima">
+			<div class="clear"></div>
+		</footer>
+	</body>
+
+</html>
