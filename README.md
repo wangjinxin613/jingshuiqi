@@ -17,4 +17,4 @@
   
 **请勿下载用作于商业目的**
 
-![图](https://github.com/wangjinxin613/ImageCache/raw/jingshuiqi/other/other.png)
+![图](/raw/jingshuiqi/other/other.png)
